@@ -1,0 +1,6 @@
+php_flag log_errors on
+php_value error_log /home/u988094787/public_html/payment/payme/error_log.txt
+
+RewriteEngine on
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ index.php [L]

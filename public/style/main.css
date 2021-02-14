@@ -1,0 +1,54 @@
+.btn-actions {
+    margin: 0 10px;
+    font-size: 18px;
+    line-height: 34px;
+}
+.act-tit, .act-but{
+    text-align: center
+}
+
+.actions{
+    padding-left: 10px;
+}
+.actions .lang{
+    color: green;
+}
+.actions .trash{
+    color: red;
+}
+.btn-actions .trash{
+    color: red;
+}
+.modal-footer a:hover{
+    color: black!important;
+    cursor: pointer;
+}
+
+.action{
+    padding-right: 10px;
+}
+.link-edit{
+    background: #007bff;
+    color: white;
+}
+.link-edit:hover{
+    color: #0b4e96 !important;
+}
+.link-lang{
+    background: yellow;
+}
+.link-delete{
+    background: red;
+    color: white;
+}
+.link-delete:hover{
+    color: red;
+}
+a.dropdown-item {
+    padding: 8px 10px;
+}
+
+.required:after {
+    content:" *";
+    color:red;
+}

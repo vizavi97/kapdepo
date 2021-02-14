@@ -1,0 +1,32 @@
+{
+    "name": "test", 
+    "children": [
+        {
+            "name": "MEDIA", 
+            "children": [
+           
+                {
+                    "rate": -1.72, 
+                    "name": "SUNTV", 
+                    "value": 41.16
+                }
+               
+            ]
+        }, 
+    
+    
+        {
+            "name": "FINANCE", 
+            "children": [
+                {
+                    "rate": 1.39, 
+                    "name": "UNIONBANK", 
+                    "value": 21.73
+                }
+               
+            ]
+        }
+       
+        
+    ]
+}

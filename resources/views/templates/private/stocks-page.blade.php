@@ -1,0 +1,416 @@
+@extends('layouts.app')
+
+@section('main_head')
+    <section class="banner-section" id="section">
+        <div class="banner-page-new">
+            <div class="item">
+                <div class="bg_header" style="background: url({{ asset('front/stocks-private.jpg') }}) no-repeat; background-size: cover; background-position: center;"></div>
+                <div class="item-banner">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="slider-wrapper__section">
+                                    <span class="title-span">@lang('Акции') </span>
+                                    <span class="bor"></span>
+
+                                </div>
+                                <h1>  <br>  </h1>
+                                <div class="new-block-text">
+                                    <p>   <br> </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+@endsection
+@section('breadcrumb')
+    <section class="about-us" id="info">
+        <div class="container">
+            <div class="site-title clearfix">
+                <h2>@lang('Акции')</h2>
+                <ul class="breadcrumbs">
+                    <li>
+                        <a href="{{ route('home') }}">@lang('Главная')</a>
+                    </li>
+                    <li>
+                        <a href="{{ route('private.page') }}">@lang('Частным клиентам')</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </section>
+@endsection
+
+
+@section('content')
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div id="demobox">
+                    <div id="heatmap"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @push('heats')
+        <script type="text/javascript" src="{{asset('front/js/heats/d3.min.js')}}"></script>
+        <script type="text/javascript" src="{{asset('front/js/heats/d3-quer.min.js')}}"></script>
+        <script type="text/javascript" src="{{asset('front/js/heats/topojson.min.js')}}"></script>
+    @endpush
+
+    <script type="text/javascript">
+        $(document).ready(function (){
+            var margin = {top: 0, right: 0, bottom: 0, left: 0},
+                width = 800,
+                height = 450 - margin.top - margin.bottom,
+                formatNumber = d3.format(",d"),
+                transitioning;
+
+            var x = d3.scale.linear()
+                .domain([0, width])
+                .range([0, width]);
+
+            var y = d3.scale.linear()
+                .domain([0, height])
+                .range([0, height]);
+
+            var color = d3.scale.threshold()
+                .domain([-3,-0.25,0.25,3])
+                // .range(["#BB0000","#600A0A","#404040","#064D15","#1CA41C"]);
+                .range(["#FF0000","#FF0000","#404040","#39b839","#39b839"]);
+
+
+            var treemap = d3.layout.treemap()
+                .children(function(d, depth) { return depth ? null : d._children; })
+                .sort(function(a, b) { return a.value - b.value; })
+                .ratio(height / width * 0.5 * (1 + Math.sqrt(5)))
+                .round(false);
+            // console.log(treemap);
+            var svg = d3.select("#heatmap").append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.bottom + margin.top)
+                .style("margin-left", -margin.left + "px")
+                .style("margin.right", -margin.right + "px")
+                .append("g")
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+                .style("shape-rendering", "crispEdges");
+
+            var grandparent = svg.append("g")
+                .attr("class", "grandparent");
+
+            grandparent.append("rect")
+                .attr("y", -margin.top)
+                .attr("width", width)
+                .attr("height", margin.top);
+
+            grandparent.append("text")
+                .attr("x", 6)
+                .attr("y", 6 - margin.top)
+                .attr("dy", ".75em");
+
+            d3.queue()
+                {{--.defer(d3.json, "{{asset('front/js/heats')}}/data.json")--}}
+                .defer(d3.json, "{{ route('private.stocks.data') }}")
+                .await(function(error, root) {
+                    if (error) throw error;
+                    initialize(root);
+                    accumulate(root);
+                    layout(root);
+                    display(root);
+
+                    function initialize(root) {
+                        root.x = root.y = 0;
+                        root.dx = width;
+                        root.dy = height;
+                        root.depth = 0;
+                    }
+
+                    function accumulate(d) {
+                        return (d._children = d.children)
+                            ? d.value = d.children.reduce(function(p, v) { return p + accumulate(v); }, 0)
+                            : d.value;
+                    }
+
+                    function layout(d) {
+                        if (d._children) {
+                            treemap.nodes({_children: d._children});
+                            d._children.forEach(function(c) {
+                                c.x = d.x + c.x * d.dx;
+                                c.y = d.y + c.y * d.dy;
+                                c.dx *= d.dx;
+                                c.dy *= d.dy;
+                                c.parent = d;
+                                layout(c);
+                            });
+                        }
+                    }
+
+                    function getContrast50(hexcolor) {
+                        return (parseInt(hexcolor.replace('#', ''), 16) > 0xffffff/3) ? 'black':'white';
+                    }
+
+                    function display(d) {
+                        grandparent
+                            .datum(d.parent)
+                            .on("click", transition)
+                            .select("text")
+                            // .text(name(d));
+
+                        grandparent
+                            .datum(d.parent)
+                            .select("rect")
+                            .attr("fill", function(){return color(d['rate'])})
+
+                        var g1 = svg.insert("g", ".grandparent")
+                            .datum(d)
+                            .attr("class", "depth");
+
+                        var g = g1.selectAll("g")
+                            .data(d._children)
+                            .enter().append("g");
+
+                        // g.filter(function(d) { return d._children; })
+                        //     .classed("children", true)
+                        //     .on("click", transition);
+
+                        g.selectAll(".child")
+                            .data(function(d) { return d._children || [d]; })
+                            .enter().append("rect")
+                            .attr("class", "child")
+                            .call(rect);
+
+                        d3.select("#heatmap").select("#tooltip").remove();
+                        var div = d3.select("#heatmap").append("div")
+                            .attr("id", "tooltip")
+                            .style("opacity", 0);
+
+
+                        g.append("svg:a")
+                            .attr("xlink:href", function(d) {
+                                if(!d._children){
+                                    var url = "#";
+                                    return url;
+                                }
+                            })
+                            .append("rect")
+                            .attr("class", "parent")
+                            .call(rect)
+                            .on("mouseover", function(d) {
+                                if (d.parent.name != "MARKET") {
+                                    d3.select("#tooltip").transition()
+                                        .duration(200)
+                                        .style("opacity", 1);
+                                        let r = null;
+                                        if (d['_children'][0]['rate'] > 0){
+                                            r = '<span style="color: #39b839;" >' + d['_children'][0]['rate'] + ' %</span>'
+                                        }else {
+                                            r = '<span style="color: #FF0000;" >' + d['_children'][0]['rate'] + ' %</span>'
+
+                                        }
+                                    d3.select("#tooltip").html("<div class='info-bl'><h3>"+d.name+"</h3><table><thead><tr><td>Market Cap</td><td>Month change</td></tr></thead>"+
+                                        "<tr><td>"+d.value+"</td><td> "+r+"</td></tr>"+
+                                        "</table></div>")
+                                        // .style("left", (d3.event.pageX-document.getElementById('info').offsetLeft) + "px")
+                                        // .style("top", (d3.event.pageY-document.getElementById('info').offsetTop) + "100px");
+                                    // console.log(d['_children'][0]['rate']);
+                                }
+                            })
+                            .on("mouseout", function(d) {
+                                d3.select("#tooltip").transition()
+                                    .duration(500)
+                                    .style("opacity", 0);
+                            })
+                            .append("title")
+                            .text(function(d) { return formatNumber(d.value); });
+
+
+                        g.append("text")
+                            .attr("dy", ".75em")
+                            .text(function(d) { return d.name; })
+                            .call(text);
+
+                        function transition(d) {
+                            if (transitioning || !d) return;
+                            transitioning = true;
+
+                            var g2 = display(d),
+                                t1 = g1.transition().duration(750),
+                                t2 = g2.transition().duration(750);
+
+                            x.domain([d.x, d.x + d.dx]);
+                            y.domain([d.y, d.y + d.dy]);
+
+                            svg.style("shape-rendering", null);
+
+                            svg.selectAll(".depth").sort(function(a, b) { return a.depth - b.depth; });
+
+                            g2.selectAll("text").style("fill-opacity", 0);
+
+                            t1.selectAll("text").call(text).style("fill-opacity", 0);
+                            t2.selectAll("text").call(text).style("fill-opacity", 1);
+                            t1.selectAll("rect").call(rect);
+                            t2.selectAll("rect").call(rect);
+
+                            t1.remove().each("end", function() {
+                                svg.style("shape-rendering", "crispEdges");
+                                transitioning = false;
+                            });
+                        }
+
+                        return g;
+                    }
+
+                    function text(text) {
+                        text.attr("x", function(d) { return x(d.x) + (x(d.x + d.dx) - x(d.x))/2; })
+                            .attr("y", function(d) { return y(d.y) + (y(d.y + d.dy) - y(d.y))/2; })
+                            .attr("dy", 0)
+                            .attr("font-size", function(d) { var w=x(d.x + d.dx) - x(d.x),
+                                h=y(d.y + d.dy) - y(d.y),
+                                t=(d.name).length/1.3;
+                                var tf=Math.min(Math.floor(w/t),h/3);
+                                return (tf>=5)?Math.min(tf, 30):0; })
+                            .attr("fill", "white")
+                            .attr("text-anchor", "middle");
+                    }
+
+                    function rect(rect) {
+                        rect.attr("x", function(d) { return x(d.x); })
+                            .attr("y", function(d) { return y(d.y); })
+                            .attr("width", function(d) { return x(d.x + d.dx) - x(d.x); })
+                            .attr("height", function(d) { return y(d.y + d.dy) - y(d.y); })
+                            .attr("rate", function(d){return d.rate;})
+                            .attr("fill", function(d){return color(parseFloat(d.rate));});
+
+                        // console.log(d.rate);
+                    }
+
+                    function name(d) {
+                        return d.parent
+                            ? "Sector : "+d.name+" (Back to Overall Market)"
+                            : "Overall "+d.name;
+                    }
+                });
+        });
+    </script>
+
+    <style type="text/css">
+        /* Container
+/* =============================================== */
+        #demobox {
+            margin: auto;
+            min-height: 310px;
+            /*min-width: 800px; */
+            /*max-width: 800px; */
+            /*padding-left: 30px; */
+            color: #333; }
+
+        #tooltip h3 {
+            margin: 2px;
+            font-weight: bold;
+            font-family: 'CenturyGothic';
+            font-size: 14px;
+            text-align: center;
+        }
+        #tooltip {
+            position: absolute;
+            top:0;
+            right: 0;
+            background:rgba(255,255,255,1);
+            text-align: left;
+            border:1px;
+            /*border-radius:5px;*/
+            border: 2px solid #5b636a;
+            font: 12px sans-serif;
+            width:auto;
+            padding-top:4px;
+            color:black;
+            opacity:0;
+            pointer-events: none;
+        }
+        #tooltip table{
+            table-layout:fixed;
+            font-family: 'CenturyGothic';
+
+        }
+        #tooltip tbody tr td{
+            font-size: 14px;
+            font-weight: bold;
+        }
+        #tooltip thead tr td{
+            font-size: 13px;
+            font-weight: bold;
+        }
+        #tooltip tr td{
+            padding: 5px 15px;
+            margin:0;
+        }
+
+        #heatmap {
+            position: relative;
+            /*width: 900px;*/
+            height: 500px;
+        }
+
+        text {
+            pointer-events: none;
+            font-family: sans-serif;
+        }
+
+        .grandparent text {
+            font-weight: bold;
+        }
+
+        rect {
+            stroke: #000;
+            stroke-width: 1px;
+        }
+
+        rect.parent,
+        .grandparent rect {
+            stroke-width: 0px;
+        }
+
+        .grandparent rect {
+            fill: #fff;
+        }
+
+        .grandparent:hover rect {
+            fill-opacity: .5;
+        }
+
+        rect.parent {
+            cursor: pointer;
+        }
+
+        .children rect.parent {
+            cursor: zoom-in;
+        }
+
+        .grandparent rect {
+            cursor: zoom-out;
+        }
+
+        rect.parent {
+            fill-opacity: .5;
+        }
+
+        rect.parent:hover {
+            fill: #bbb;
+            fill-opacity: .2;
+        }
+
+        .children rect.parent {
+            fill-opacity: 0;
+        }
+
+        .children:hover rect.parent {
+            fill-opacity: .2;
+        }
+
+    </style>
+@endsection
+

@@ -1,0 +1,2 @@
+# kapdepo
+kapdepo.uz

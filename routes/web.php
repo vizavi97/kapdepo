@@ -16,22 +16,22 @@
 //});
 Auth::routes(['register' => false]);
 
-Route::group(['prefix' => 'web-api'], function (){
-    Route::match(['get','post'],'user-register', 'ApiController@register');
-    Route::get('tasks-run','ApiController@TaskRun');
+Route::group(['prefix' => 'web-api'], function () {
+    Route::match(['get', 'post'], 'user-register', 'ApiController@register');
+    Route::get('tasks-run', 'ApiController@TaskRun');
 });
 // PERSONAL CABINET
 
-Route::get('test','HomeController@testXML');
+Route::get('test', 'HomeController@testXML');
 
 Route::get('logout', 'UserController@logout')->name('logout');
 
-Route::group(['prefix' => 'cabinet', 'middleware' => 'auth'], function (){
+Route::group(['prefix' => 'cabinet', 'middleware' => 'auth'], function () {
     Route::get('/', 'UserController@index')->name('cabinet.home');
-    Route::match(['get', 'post'],'change-password', 'UserController@changePass')->name('change.pass');
+    Route::match(['get', 'post'], 'change-password', 'UserController@changePass')->name('change.pass');
 
-    Route::match(['get', 'post'],'refill', 'UserController@refill')->name('refill');
-    Route::match(['get', 'post'],'refill-test', 'UserController@refillTest')->name('refill-test');
+    Route::match(['get', 'post'], 'refill', 'UserController@refill')->name('refill');
+    Route::match(['get', 'post'], 'refill-test', 'UserController@refillTest')->name('refill-test');
 
     Route::get('pnl', 'UserController@getPNL')->name('get.pnl');
 
@@ -44,7 +44,7 @@ Route::get('setlocale/{locale}', 'HomeController@setLang')->name('lang');
 Route::post('/branches', 'HomeController@branchesRequest')->name('branches.request');
 
 //news
-Route::group(['prefix' => 'news',], function (){
+Route::group(['prefix' => 'news', "middleware" => \App\Http\Middleware\ClearCache::class], function () {
     Route::get('/{category}', 'HomeController@getNews')->name('news.page');
     Route::get('{category}/{slug}', 'HomeController@getNewsItem')->name('news.item');
 
@@ -63,13 +63,13 @@ Route::get('appeal', 'HomeController@getAppealPage')->name('appeal.page');
 Route::get('info-disclosure', 'HomeController@getDisclosurePage')->name('disclosure.page');
 // About-us
 //Route::get('about-us', 'HomeController@getAbout')->name('about');
-Route::group(['prefix' => 'about-us'], function (){
+Route::group(['prefix' => 'about-us'], function () {
     Route::get('/', 'HomeController@getAbout')->name('about.page');
     Route::get('leadership', 'HomeController@getTeamPage')->name('team.page');
     Route::get('resume', 'HomeController@getResumePage')->name('team.resume');
 });
 //private
-Route::group(['prefix' => 'private'], function (){
+Route::group(['prefix' => 'private'], function () {
     Route::get('/', 'HomeController@getPrivate')->name('private.page');
     Route::get('stocks', 'HomeController@getPrivateStocks')->name('private.stocks.page');
     Route::get('stocks-data', 'HomeController@getPrivateStocksData')->name('private.stocks.data');
@@ -77,11 +77,11 @@ Route::group(['prefix' => 'private'], function (){
     Route::get('start-trading', 'HomeController@getPrivateTrade')->name('private.trade.page');
 });
 //corporate
-Route::group(['prefix' => 'corporate'], function (){
+Route::group(['prefix' => 'corporate'], function () {
     Route::get('/', 'HomeController@getCorporate')->name('corporate.page');
 });
 //kd-ideas
-Route::group(['prefix' => 'kd-ideas'], function (){
+Route::group(['prefix' => 'kd-ideas', "middleware" => \App\Http\Middleware\ClearCache::class], function () {
     Route::get('/', 'HomeController@getKd')->name('kd.page');
 
 
@@ -92,47 +92,51 @@ Route::group(['prefix' => 'kd-ideas'], function (){
 
 // Market data
 
-Route::group(['prefix' => 'market-data'], function (){
-    Route::get('/','HomeController@getMarketData')->name('market.page');
+Route::group(['prefix' => 'market-data'], function () {
+    Route::get('/', 'HomeController@getMarketData')->name('market.page');
 
-    Route::post('/market-json/{id}','HomeController@getMarketDataJson')->name('market-json.page');
-    Route::post('/market-company-json/{id}','HomeController@getMarketCompanyJson')->name('market-company-json.page');
-    Route::post('/market-company-preference-json/{id}','HomeController@getMarketCompanyPrefJson')->name('market-company-prefer-json.page');
-    Route::get('/market-json','HomeController@getMarketDataJsonGet')->name('market-json.pageget');
+    Route::post('/market-json/{id}', 'HomeController@getMarketDataJson')->name('market-json.page');
+    Route::post('/market-company-json/{id}', 'HomeController@getMarketCompanyJson')->name('market-company-json.page');
+    Route::post('/market-company-preference-json/{id}', 'HomeController@getMarketCompanyPrefJson')->name('market-company-prefer-json.page');
+    Route::get('/market-json', 'HomeController@getMarketDataJsonGet')->name('market-json.pageget');
 
-    Route::get('{issuer}/company','HomeController@getMarketCompany')->name('market.company');
-    Route::get('{issuer}/balance','HomeController@getMarketBalance')->name('market.balance');
-    Route::get('{issuer}/financial','HomeController@getMarketFinancial')->name('market.financial');
-    Route::get('{issuer}/analysis','HomeController@getMarketAnalysis')->name('market.analysis');
-    Route::get('{issuer}/profile','HomeController@getMarketProfile')->name('market.profile');
+    Route::get('{issuer}/company', 'HomeController@getMarketCompany')->name('market.company');
+    Route::get('{issuer}/balance', 'HomeController@getMarketBalance')->name('market.balance');
+    Route::get('{issuer}/financial', 'HomeController@getMarketFinancial')->name('market.financial');
+    Route::get('{issuer}/analysis', 'HomeController@getMarketAnalysis')->name('market.analysis');
+    Route::get('{issuer}/profile', 'HomeController@getMarketProfile')->name('market.profile');
 });
 
 // open account
-Route::group(['prefix' => 'open-account'], function (){
-    Route::get('/','HomeController@getOpenAccount')->name('open.account');
-    Route::get('/{type}','HomeController@getOpenAccount')->name('open.account.type');
+Route::group(['prefix' => 'open-account'], function () {
+    Route::get('/', 'HomeController@getOpenAccount')->name('open.account');
+    Route::get('/{type}', 'HomeController@getOpenAccount')->name('open.account.type');
 });
 
+// TIM
 
-
+Route::group(["prefix" => 'tim', "middleware" => \App\Http\Middleware\ClearCache::class], function () {
+    Route::get('/faq', 'Tim\FaqController@get');
+    Route::post('/create-comment', "CommentController@createComment")->name('create-comment');
+});
 
 // FOR ADMIN
 
 Route::group([
-    'middleware' => 'admin',
+    'middleware' => ['admin', \App\Http\Middleware\ClearCache::class],
     'prefix' => 'admin',
 ], function () {
     Route::get('/', 'Admin\AdminController@index')->name('admin.home');
 
 
 //  STATISTIC
-    Route::match(['get', 'post'],'statistics', 'Admin\AdminController@getStats')->name('stat.edit');
-    Route::get('test','Admin\AdminController@getXml')->name('stat.update');
+    Route::match(['get', 'post'], 'statistics', 'Admin\AdminController@getStats')->name('stat.edit');
+    Route::get('test', 'Admin\AdminController@getXml')->name('stat.update');
 
 // SEO
     Route::group([
         'prefix' => 'seo'
-    ], function (){
+    ], function () {
         Route::get('/', 'Admin\AdminController@SeoList')->name('seo.list');
         Route::match(['get', 'post'], 'create', 'Admin\AdminController@SeoCreate')->name('seo.create');
     });
@@ -141,38 +145,36 @@ Route::group([
 
     Route::group([
         'prefix' => 'settings'
-    ], function (){
-        Route::match(['get','post'],'/','Admin\AdminController@settings')->name('settings');
+    ], function () {
+        Route::match(['get', 'post'], '/', 'Admin\AdminController@settings')->name('settings');
     });
 //    USERS
     Route::group([
-       'prefix' => 'users'
-    ], function (){
+        'prefix' => 'users'
+    ], function () {
         Route::get('/', 'UserController@list')->name('users.list');
-        Route::match(['get', 'post'], 'create', 'UserController@create' )->name('users.create');
-        Route::match(['get', 'post'], 'edit/{id}', 'UserController@edit' )->name('users.edit');
+        Route::match(['get', 'post'], 'create', 'UserController@create')->name('users.create');
+        Route::match(['get', 'post'], 'edit/{id}', 'UserController@edit')->name('users.edit');
 
         Route::get('stocks', 'UserController@stocksList')->name('users.stocks.list');
         Route::get('stocks-update', 'UserController@stocksListUpdateLink')->name('users.stocks.list.update');
         Route::get('stocks-delete/{id}', 'UserController@stocksDelete')->name('users.stocks.delete');
-        Route::match(['get', 'post'], 'stocks-add','UserController@stocksAdd')->name('users.stocks.add');
-        Route::match(['get', 'post'], 'stocks-edit/{id}', 'UserController@stocksEdit' )->name('users.stocks.edit');
+        Route::match(['get', 'post'], 'stocks-add', 'UserController@stocksAdd')->name('users.stocks.add');
+        Route::match(['get', 'post'], 'stocks-edit/{id}', 'UserController@stocksEdit')->name('users.stocks.edit');
 
 
-
-
-        Route::get('import-list','UserController@importList')->name('users.import.list');
-        Route::get('import/delete/{id}','UserController@importDelete')->name('users.import.delete');
-        Route::match(['get', 'post'], 'import-page','UserController@importData')->name('users.import.data');
+        Route::get('import-list', 'UserController@importList')->name('users.import.list');
+        Route::get('import/delete/{id}', 'UserController@importDelete')->name('users.import.delete');
+        Route::match(['get', 'post'], 'import-page', 'UserController@importData')->name('users.import.data');
     });
 //     MENU
     Route::group([
         'prefix' => 'menu'
-    ], function (){
+    ], function () {
 
         Route::get('/', 'Admin\MenuController@list')->name('menu.list');
         Route::get('lang/{lang}', 'Admin\MenuController@list')->name('menu.list.lang');
-        Route::post('order','Admin\MenuController@order')->name('menu.order');
+        Route::post('order', 'Admin\MenuController@order')->name('menu.order');
         Route::match(['get', 'post'], 'create', 'Admin\MenuController@create')->name('menu.create');
         Route::match(['get', 'post'], 'edit/{id}', 'Admin\MenuController@edit')->name('menu.edit');
         Route::get('delete/{id}', 'Admin\MenuController@delete')->name('menu.delete');
@@ -181,7 +183,7 @@ Route::group([
 //    KD - INDEX
     Route::group([
         'prefix' => 'kd-index'
-    ], function (){
+    ], function () {
 
         Route::get('/', 'Admin\KdController@list')->name('stocks.list');
         Route::match(['get', 'post'], 'create', 'Admin\KdController@create')->name('stocks.create');
@@ -195,7 +197,7 @@ Route::group([
 //    KD - Analytics
     Route::group([
         'prefix' => 'kd-analytics'
-    ], function (){
+    ], function () {
 
         Route::get('/', 'Admin\KdController@listAnalytics')->name('analytics.list');
         Route::match(['get', 'post'], 'create', 'Admin\KdController@createAnalytics')->name('analytics.create');
@@ -207,7 +209,7 @@ Route::group([
 //    BANNER
     Route::group([
         'prefix' => 'banner'
-    ], function (){
+    ], function () {
 
         Route::get('/', 'Admin\BannerController@list')->name('banner.list');
         Route::match(['get', 'post'], 'create', 'Admin\BannerController@create')->name('banner.create');
@@ -217,21 +219,21 @@ Route::group([
 
     });
 //    Tariffs
-Route::group([
-    'prefix' => 'tariff'
-], function (){
+    Route::group([
+        'prefix' => 'tariff'
+    ], function () {
 
-    Route::get('/', 'Admin\TariffController@list')->name('tariff.list');
-    Route::match(['get', 'post'], 'create', 'Admin\TariffController@create')->name('tariff.create');
-    Route::match(['get', 'post'], 'edit/{id}', 'Admin\TariffController@edit')->name('tariff.edit');
-    Route::match(['get', 'post'], 'translate/{id}/{lang}', 'Admin\TariffController@translate')->name('tariff.trans');
-    Route::get('delete/{id}', 'Admin\TariffController@delete')->name('tariff.delete');
+        Route::get('/', 'Admin\TariffController@list')->name('tariff.list');
+        Route::match(['get', 'post'], 'create', 'Admin\TariffController@create')->name('tariff.create');
+        Route::match(['get', 'post'], 'edit/{id}', 'Admin\TariffController@edit')->name('tariff.edit');
+        Route::match(['get', 'post'], 'translate/{id}/{lang}', 'Admin\TariffController@translate')->name('tariff.trans');
+        Route::get('delete/{id}', 'Admin\TariffController@delete')->name('tariff.delete');
 
-});
+    });
 //    News
     Route::group([
         'prefix' => 'news'
-    ], function (){
+    ], function () {
 
         Route::get('/', 'Admin\NewsController@list')->name('new.list');
         Route::match(['get', 'post'], 'create', 'Admin\NewsController@create')->name('new.create');
@@ -245,7 +247,7 @@ Route::group([
 //    Branches
     Route::group([
         'prefix' => 'branches'
-    ], function (){
+    ], function () {
 
         Route::get('/', 'Admin\BranchController@list')->name('branches.list');
         Route::match(['get', 'post'], 'create', 'Admin\BranchController@create')->name('branches.create');
@@ -257,7 +259,7 @@ Route::group([
 //    Partners
     Route::group([
         'prefix' => 'partners'
-    ], function (){
+    ], function () {
 
         Route::get('/', 'Admin\PartnerController@list')->name('partners.list');
         Route::match(['get', 'post'], 'create', 'Admin\PartnerController@create')->name('partners.create');
@@ -269,7 +271,7 @@ Route::group([
 //    Team
     Route::group([
         'prefix' => 'team'
-    ], function (){
+    ], function () {
 
         Route::get('/', 'Admin\TeamController@list')->name('team.list');
         Route::match(['get', 'post'], 'create', 'Admin\TeamController@create')->name('team.create');
@@ -281,7 +283,7 @@ Route::group([
 
     Route::group([
         'prefix' => 'history'
-    ], function (){
+    ], function () {
 
         Route::get('/', 'Admin\HistoryController@list')->name('history.list');
         Route::match(['get', 'post'], 'create', 'Admin\HistoryController@create')->name('history.create');
@@ -293,7 +295,7 @@ Route::group([
 
     Route::group([
         'prefix' => 'certificates'
-    ], function (){
+    ], function () {
 
         Route::get('/', 'Admin\CertificateController@list')->name('certificates.list');
         Route::match(['get', 'post'], 'create', 'Admin\CertificateController@create')->name('certificates.create');
@@ -304,7 +306,7 @@ Route::group([
 
     Route::group([
         'prefix' => 'achievements'
-    ], function (){
+    ], function () {
 
         Route::get('/', 'Admin\AchievController@list')->name('achiev.list');
         Route::match(['get', 'post'], 'create', 'Admin\AchievController@create')->name('achiev.create');
@@ -314,10 +316,10 @@ Route::group([
     });
 
     //    MARKET DATA
-    Route::group(['prefix' => 'data'], function (){
+    Route::group(['prefix' => 'data'], function () {
         Route::get('/', 'Admin\DataController@listData')->name('data.list');
         Route::get('delete/{id}', 'Admin\DataController@deleteData')->name('data.delete');
-        Route::post('create-single','Admin\DataController@createDataSingle')->name('data.create.single');
+        Route::post('create-single', 'Admin\DataController@createDataSingle')->name('data.create.single');
 //        Route::match(['get', 'post'], 'edit/{id}', 'Admin\DataController@edit')->name('data.edit');
 //        Route::get('delete/{id}', 'Admin\DataController@delete')->name('data.delete');
 
@@ -330,45 +332,55 @@ Route::group([
 
 
 //        Company
-        Route::get('companies','Admin\DataController@listCompany')->name('data.list.comp');
+        Route::get('companies', 'Admin\DataController@listCompany')->name('data.list.comp');
         Route::match(['get', 'post'], 'company-create', 'Admin\DataController@createCompany')->name('data.create.comp');
         Route::match(['get', 'post'], 'company-edit/{id}', 'Admin\DataController@editCompany')->name('data.edit.comp');
         Route::match(['get', 'post'], 'company-translate/{id}/{lang}', 'Admin\DataController@translateCompany')->name('data.trans.comp');
-        Route::get('delete/companies/{id}','Admin\DataController@deleteCompany')->name('data.delete.comp');
-        Route::post('info/{id}','Admin\DataController@changeCompanyDetail')->name('data.change.detail');
+        Route::get('delete/companies/{id}', 'Admin\DataController@deleteCompany')->name('data.delete.comp');
+        Route::post('info/{id}', 'Admin\DataController@changeCompanyDetail')->name('data.change.detail');
 
 
 //        Key Executives
-        Route::get('key','Admin\DataController@listKey')->name('data.list.key');
+        Route::get('key', 'Admin\DataController@listKey')->name('data.list.key');
         Route::match(['get', 'post'], 'key-create', 'Admin\DataController@createKey')->name('data.create.key');
         Route::match(['get', 'post'], 'key-edit/{id}', 'Admin\DataController@editKey')->name('data.edit.key');
         Route::match(['get', 'post'], 'key-translate/{id}/{lang}', 'Admin\DataController@translateKey')->name('data.trans.key');
-        Route::get('delete/keys/{id}','Admin\DataController@deleteKey')->name('data.delete.key');
+        Route::get('delete/keys/{id}', 'Admin\DataController@deleteKey')->name('data.delete.key');
 
 
 //        Analysis
-        Route::get('analysis','Admin\DataController@listAnalysis')->name('data.list.analysis');
+        Route::get('analysis', 'Admin\DataController@listAnalysis')->name('data.list.analysis');
         Route::match(['get', 'post'], 'analysis-create', 'Admin\DataController@createAnalysis')->name('data.create.analysis');
         Route::match(['get', 'post'], 'analysis-edit/{id}', 'Admin\DataController@editAnalysis')->name('data.edit.analysis');
         Route::match(['get', 'post'], 'analysis-translate/{id}/{lang}', 'Admin\DataController@translateAnalysis')->name('data.trans.analysis');
-        Route::get('delete/analysis/{id}','Admin\DataController@deleteAnalysis')->name('data.delete.analysis');
+        Route::get('delete/analysis/{id}', 'Admin\DataController@deleteAnalysis')->name('data.delete.analysis');
 
 
     });
 
     Route::group(['prefix' => 'bonds'], function () {
         Route::get('/', 'Admin\BondController@list')->name('bonds.list');
-        Route::match(['get', 'post'],'create', 'Admin\BondController@create')->name('bonds.create');
-        Route::match(['get', 'post'],'edit/{id}', 'Admin\BondController@edit')->name('bonds.edit');
+        Route::match(['get', 'post'], 'create', 'Admin\BondController@create')->name('bonds.create');
+        Route::match(['get', 'post'], 'edit/{id}', 'Admin\BondController@edit')->name('bonds.edit');
         Route::match(['get', 'post'], 'translate/{id}/{lang}', 'Admin\BondController@translate')->name('bonds.translate');
         Route::get('delete/{id}', 'Admin\BondController@delete')->name('bonds.delete');
     });
     Route::group(['prefix' => 'dividend'], function () {
         Route::get('/', 'Admin\DividendController@list')->name('dividend.list');
-        Route::match(['get', 'post'],'create', 'Admin\DividendController@create')->name('dividend.create');
-        Route::match(['get', 'post'],'edit/{id}', 'Admin\DividendController@edit')->name('dividend.edit');
+        Route::match(['get', 'post'], 'create', 'Admin\DividendController@create')->name('dividend.create');
+        Route::match(['get', 'post'], 'edit/{id}', 'Admin\DividendController@edit')->name('dividend.edit');
         Route::get('delete/{id}', 'Admin\DividendController@delete')->name('dividend.delete');
     });
 
-
+    //TIM
+    Route::group(['prefix' => 'faq'], function () {
+        Route::get('/', 'Tim\FaqController@list')->name('faq.list');
+        Route::match(['get', 'post'], 'edit/{id}', 'Tim\FaqController@edit')->name('faq.edit');
+        Route::match(['get', 'post'], 'create', 'Tim\FaqController@create')->name('faq.create');
+        Route::post('delete/{id}', "Tim\FaqController@delete")->name('faq.delete');
     });
+    Route::group(['prefix' => 'comments'], function () {
+        Route::get('/', 'CommentController@list')->name('comments.list');
+        Route::post('delete/{id}', "CommentController@delete")->name('comments.delete');
+    });
+});

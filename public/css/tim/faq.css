@@ -1,0 +1,110 @@
+.faq-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+}
+
+.faq-headline h2 {
+    margin-bottom: .5rem;
+}
+
+.faq-list {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    list-style: none;
+    margin: 1rem 0;
+    padding: 0
+}
+
+.faq-item label {
+    width: 100%;
+}
+
+.faq-item-headline {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    position: relative;
+    cursor: pointer;
+    padding: 1rem;
+    background-color: #fefefe;
+    box-shadow: 0 0 17px 1px rgba(222, 222, 222, .9);
+    border-radius: .5rem;
+    margin-bottom: 1rem;
+    transition: all .2s;
+}
+
+.faq-item-headline:after {
+    position: absolute;
+    right: 2rem;
+    content: '›';
+    transform: rotate(90deg);
+    font-weight: bolder;
+    font-size: 1.55rem;
+}
+
+.faq-item-headline span {
+    width: 1.5rem;
+    height: 1.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #202020;
+    color: white;
+    border-radius: 50%;
+    font-weight: 500;
+    font-size: 1.25rem;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
+
+.faq-item-headline h4 {
+    margin-bottom: 0;
+    margin-left: 1.5rem;
+}
+
+.faq-item input[type='radio'] {
+    display: none;
+}
+
+.faq-item-body {
+    position: relative;
+    height: 0;
+    overflow-y: hidden;
+    box-shadow: 0 0 17px 1px rgba(222, 222, 222, .9);
+    background-color: #fefefe;
+    transition: all .4s;
+}
+
+.faq-item-body p {
+    padding: 1rem 1rem;
+}
+
+.faq-item input[type='radio']:checked ~ .faq-item-body {
+    display: block;
+    height: 100%;
+    overflow-y: unset;
+}
+
+.faq-item input[type='radio']:checked ~ .faq-item-headline {
+    transition: all .2s;
+
+    background-color: #0788b9;
+    color: white;
+}
+
+.faq-item input[type='radio']:checked ~ .faq-item-headline:after {
+    transform: rotate(-90deg);
+    transition: revert.5s;
+
+}
+
+.faq-item input[type='radio']:checked ~ .faq-item-headline span {
+    color: #0788b9;
+    background-color: #fff;
+    transition: all .2s;
+
+}

@@ -108,3 +108,6 @@ vendor
 # Idea
 
 .idea
+#hide all sql and phar files
+*.sql
+*.phar

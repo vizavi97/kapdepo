@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class Comments extends Migration
+class CreateStartTradingSteps extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,12 @@ class Comments extends Migration
      */
     public function up()
     {
-        Schema::create('comments', function (Blueprint $table) {
+        Schema::create('start_trading_steps', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('name')->nullable()->change();
-            $table->string('categories')->nullable()->change();
-            $table->string('answer')->nullable()->change();
+            $table->integer('position')->nullable(false);
+            $table->string('lang')->default('ru');
+            $table->string('title')->nullable()->change();
+            $table->string('text')->nullable()->change();
             $table->timestamps();
         });
     }
@@ -29,12 +30,6 @@ class Comments extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('comments');
+        Schema::dropIfExists('start_trading_steps');
     }
-
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
 }

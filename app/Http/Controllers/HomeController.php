@@ -15,11 +15,13 @@ use App\FinDict;
 use App\Report;
 use App\Setting;
 use App\Achiev;
+use App\StartTradingSteps;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Route;
 
+use Lang;
 use Orchestra\Parser\Xml\Facade as XmlParser;
 use Session;
 use App\Partner;
@@ -197,7 +199,8 @@ class HomeController extends Controller
 
     public function getPrivateTrade()
     {
-        return view('templates.private.start-trade-page');
+        $data = StartTradingSteps::all()->where('lang', Lang::getLocale());
+        return view('templates.private.start-trade-page')->with('steps', $data);
     }
 
 //    Corporate
@@ -211,7 +214,7 @@ class HomeController extends Controller
     {
         $analytics = Analytic::where(['lang' => App::getLocale()])->latest()->take(4)->get();
         $comments = Comment::where('parent_slug', 'analytics')->get();
-        return view('templates.kd.page')->with(['analytics' => $analytics,"comments" => $comments, "parent" => "analytics"]);
+        return view('templates.kd.page')->with(['analytics' => $analytics, "comments" => $comments, "parent" => "analytics"]);
     }
 
     public function getKdIndex(Request $request)

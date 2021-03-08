@@ -69,7 +69,7 @@ Route::group(['prefix' => 'about-us'], function () {
     Route::get('resume', 'HomeController@getResumePage')->name('team.resume');
 });
 //private
-Route::group(['prefix' => 'private'], function () {
+Route::group(['prefix' => 'private', "middleware" => \App\Http\Middleware\ClearCache::class], function () {
     Route::get('/', 'HomeController@getPrivate')->name('private.page');
     Route::get('stocks', 'HomeController@getPrivateStocks')->name('private.stocks.page');
     Route::get('stocks-data', 'HomeController@getPrivateStocksData')->name('private.stocks.data');
@@ -92,7 +92,7 @@ Route::group(['prefix' => 'kd-ideas', "middleware" => \App\Http\Middleware\Clear
 
 // Market data
 
-Route::group(['prefix' => 'market-data'], function () {
+Route::group(['prefix' => 'market-data', "middleware" => \App\Http\Middleware\ClearCache::class], function () {
     Route::get('/', 'HomeController@getMarketData')->name('market.page');
 
     Route::post('/market-json/{id}', 'HomeController@getMarketDataJson')->name('market-json.page');
@@ -383,4 +383,20 @@ Route::group([
         Route::get('/', 'CommentController@list')->name('comments.list');
         Route::post('delete/{id}', "CommentController@delete")->name('comments.delete');
     });
+    Route::group(['prefix' => 'start-trading'], function () {
+        Route::get('/', 'Tim\StartTradingStepsController@list')->name('start-trading.list');
+        Route::match(['get', 'post'], 'create', 'Tim\StartTradingStepsController@create')->name('start-trading.create');
+        Route::match(['get', 'post'], 'edit/{id}', 'Tim\StartTradingStepsController@edit')->name('start-trading.edit');
+        Route::post('delete/{id}', "Tim\StartTradingStepsController@delete")->name('start-trading.delete');
+    });
+    Route::group(['prefix' => "company-data",'middleware' => \App\Http\Middleware\ClearCache::class], function () {
+        Route::get('/', "Tim\StaticPageController@getCompanyPageInformation")->name('company-data-page');
+    });
+    Route::group(['prefix' => 'api'], function () {
+        Route::get('/company-data', "Tim\ApiController@getCompanyData");
+    });
+});
+
+Route::group(["prefix" => "api", "middleware" => \App\Http\Middleware\ClearCache::class], function () {
+    Route::get('/market-data', "Tim\ApiController@getMarketData");
 });

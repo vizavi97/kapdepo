@@ -82,6 +82,12 @@
               <p>Список комментариев</p>
             </a>
           </li>
+          <li class="nav-item">
+            <a href="{{ route("start-trading.list") }}" class="nav-link">
+              <i class="nav-icon fas fa-envelope-square"></i>
+              <p>как начать торговать (Этапы)</p>
+            </a>
+          </li>
 
         </ul>
       </li>
@@ -244,6 +250,18 @@
         </a>
 
       </li>
+
+      {{--M/D COMPANY--}}
+      <li class="nav-item">
+        <a href="{{route('company-data-page')}}" class="nav-link ">
+          <i class="nav-icon fas fa-chart-bar"></i>
+          <p>
+            M/D COMPANY
+          </p>
+        </a>
+
+      </li>
+
 
       {{--SEO--}}
       {{--            <li class="nav-item has-treeview">--}}

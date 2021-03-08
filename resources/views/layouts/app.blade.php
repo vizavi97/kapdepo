@@ -133,12 +133,12 @@
 {{--<script type="text/javascript" src="{{ asset('style/plugins/chart.js/Chart.min.js') }}"></script>--}}
 
 {{--        <script type="text/javascript" src="{{asset('front/js/highchart/highcharts.js')}}"></script>--}}
-@stack('main-chart')
+{{--@stack('main-chart')--}}
 {{--<script type="text/javascript" src="{{asset('front/js/highchart/highstock.js')}}"></script>--}}
-<script type="text/javascript" src="{{asset('front/js/highchart/data.js')}}"></script>
-<script type="text/javascript" src="{{asset('front/js/highchart/exporting.js')}}"></script>
-<script type="text/javascript" src="{{asset('front/js/highchart/export-data.js')}}"></script>
-<script type="text/javascript" src="{{asset('front/js/highchart/accessibility.js')}}"></script>
+{{--<script type="text/javascript" src="{{asset('front/js/highchart/data.js')}}"></script>--}}
+{{--<script type="text/javascript" src="{{asset('front/js/highchart/exporting.js')}}"></script>--}}
+{{--<script type="text/javascript" src="{{asset('front/js/highchart/export-data.js')}}"></script>--}}
+{{--<script type="text/javascript" src="{{asset('front/js/highchart/accessibility.js')}}"></script>--}}
 
 
 {{--<script type="text/javascript" src="{{asset('front/js/waypoints/lib/jquery.waypoints.min.js')}}"></script>--}}

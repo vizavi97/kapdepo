@@ -28,20 +28,21 @@ class DataController extends Controller
     public function listData(Request $request)
     {
 
-        if ($request->has('pref')){
-            $data  = CompanyPreference::orderBy('id','desc')->paginate(30);
+        if ($request->has('pref')) {
+            $data = CompanyPreference::orderBy('id', 'desc')->paginate(30);
             $type = 'Preference';
-        }else{
-            $data  = CompanyData::orderBy('id','desc')->paginate(30);
+        } else {
+            $data = CompanyData::orderBy('id', 'desc')->paginate(30);
             $type = '';
         }
 //        dd('yes');
         return view('admin.data.list')->with([
             'comps' => Company::get(),
-            'datas' => $data ,
-            'type' => $type ,
+            'datas' => $data,
+            'type' => $type,
         ]);
     }
+
     public function createDataSingle(Request $request)
     {
         $rules = [
@@ -49,46 +50,47 @@ class DataController extends Controller
         ];
         $validator = Validator::make($request->all(), $rules);
 
-        if($validator->fails()){
+        if ($validator->fails()) {
             return redirect()->back()->withErrors($validator);
         }
-        $data = Excel::toArray(new BrokerImport(),$request->file('image'));
+        $data = Excel::toArray(new BrokerImport(), $request->file('image'));
 
-        for($i = 1; $i < count($data[0]); $i++){
-            if(!empty($data[0][$i][2])){
-                if($request->has('pref')){
+        for ($i = 1; $i < count($data[0]); $i++) {
+            if (!empty($data[0][$i][2])) {
+                if ($request->has('pref')) {
                     $model = new CompanyPreference();
-                }else{
+                } else {
                     $model = new CompanyData();
                 }
                 $comp_data = $model;
                 $comp_data->company_id = $request->comp_id;
                 $comp_data->last_price = $data[0][$i][2];
                 $comp_data->volume = $data[0][$i][4];
-                $comp_data->time = $data[0][$i][0].':00';
-                $comp_data->timestamp = strtotime(date(str_replace('.','-', $data[0][$i][1]) . ' ' . $data[0][$i][0] .':00'));
+                $comp_data->time = $data[0][$i][0] . ':00';
+                $comp_data->timestamp = strtotime(date(str_replace('.', '-', $data[0][$i][1]) . ' ' . $data[0][$i][0] . ':00'));
                 $comp_data->date = date('Y-m-d', $comp_data->timestamp);
 //                $comp_data->date = str_replace('.','-', $data[0][$i][1]);
                 $comp_data->save();
             }
         }
         $message = 'Добавлено';
-        if ($request->has('pref')){
-            return redirect()->route('data.list','pref=1')->with('message', $message);
+        if ($request->has('pref')) {
+            return redirect()->route('data.list', 'pref=1')->with('message', $message);
         }
         return redirect()->route('data.list')->with('message', $message);
     }
-    public function deleteData(Request $request ,$id)
+
+    public function deleteData(Request $request, $id)
     {
         $message = 'Удалено';
 
-        if($request->has('pref')){
+        if ($request->has('pref')) {
             CompanyPreference::find($id)->delete();
-            return redirect()->route('data.list','pref=1')->with('message', $message);
+            return redirect()->route('data.list', 'pref=1')->with('message', $message);
 
         }
-            CompanyData::find($id)->delete();
-            return redirect()->route('data.list')->with('message', $message);
+        CompanyData::find($id)->delete();
+        return redirect()->route('data.list')->with('message', $message);
 
 
     }
@@ -97,14 +99,15 @@ class DataController extends Controller
     public function getReports()
     {
         $reports = Report::orderBy('id', 'desc')->paginate(50);
-        return view('admin.data.dict.fin-list')->with('reports',$reports);
+        return view('admin.data.dict.fin-list')->with('reports', $reports);
     }
+
     public function createReport(Request $request)
     {
-        if($request->isMethod('get')){
+        if ($request->isMethod('get')) {
             $comps = Company::get();
             return view('admin.data.dict.fin-create')->with('comps', $comps);
-        }else{
+        } else {
 
             $rules = [
                 'body' => 'required',
@@ -113,32 +116,33 @@ class DataController extends Controller
                 'date' => 'required|date_format:d/m/Y',
             ];
             $validator = Validator::make($request->all(), $rules);
-            if($validator->fails()){
-                return back()->with('er','hello')->withErrors($validator);
+            if ($validator->fails()) {
+                return back()->with('er', 'hello')->withErrors($validator);
             }
 //            dd($request->all());
             $new = new Report();
             $new->type = $request->type;
             $new->company_id = $request->company;
             $new->date = $request->date;
-            $new->year = date('Y',strtotime(str_replace('/', '.', $request->date)));
+            $new->year = date('Y', strtotime(str_replace('/', '.', $request->date)));
             $new->quarter = $request->kvartal;
             $new->body = $request->body;
             $new->save();
             $message = 'Успешно добавлен';
 
-            return redirect()->route('report.list')->with('message',$message);
+            return redirect()->route('report.list')->with('message', $message);
 
         }
     }
+
     public function editReport(Request $request, $id)
     {
         $report = Report::find($id);
         $comps = Company::get();
-        if($request->isMethod('get')){
+        if ($request->isMethod('get')) {
 //            dd(strtotime($report->date));
             return view('admin.data.dict.fin-edit')->with(['report' => $report, 'comps' => $comps]);
-        }else{
+        } else {
             $rules = [
                 'body' => 'required',
                 'company' => 'required|numeric',
@@ -146,23 +150,24 @@ class DataController extends Controller
                 'date' => 'required|date_format:d/m/Y',
             ];
             $validator = Validator::make($request->all(), $rules);
-            if($validator->fails()){
-                return back()->with('er','hello')->withErrors($validator);
+            if ($validator->fails()) {
+                return back()->with('er', 'hello')->withErrors($validator);
             }
             $report->update([
                 'type' => $request->type,
                 'body' => $request->body,
                 'company_id' => $request->company,
                 'quarter' => $request->kvartal,
-                'year' => date('Y',strtotime(str_replace('/', '.', $request->date))),
+                'year' => date('Y', strtotime(str_replace('/', '.', $request->date))),
                 'date' => $request->date,
             ]);
             $message = 'Успешно обновлено';
 
-            return redirect()->route('report.list')->with('message',$message);
+            return redirect()->route('report.list')->with('message', $message);
 
         }
     }
+
     public function deleteReport($id)
     {
         $fin = Report::find($id);
@@ -174,26 +179,31 @@ class DataController extends Controller
 
 
     //      Company
-    public function listCompany()
+    public function listCompany(Request $request)
     {
-        $comps = Company::paginate(15);
-        return view('admin.data.company')->with('comps', $comps);
+        $comps = Company::where('id', "!=", null);
+        if (isset($request->status) && $request->status != "") {
+            $comps->where("status", $request->status);
+        }
+        return view('admin.data.company')->with('comps', $comps->paginate(15));
     }
+
     public function createCompany(Request $request)
     {
-        if($request->isMethod('get')){
+        if ($request->isMethod('get')) {
             return view('admin.data.company-create');
-        }else{
+        } else {
             $rules = [
                 'title' => 'required',
                 'isin' => 'required',
                 'issuer' => 'required',
+                'status' => 'required',
                 'image' => 'required|max:1024|mimes:jpeg,jpg,png',
             ];
 //            dd($request->all());
             $validator = Validator::make($request->all(), $rules);
-            if($validator->fails()){
-                return back()->with('er','hello')->withErrors($validator);
+            if ($validator->fails()) {
+                return back()->with('er', 'hello')->withErrors($validator);
             }
             $name = $request->file('image')->store('company', 'public');
 
@@ -202,6 +212,7 @@ class DataController extends Controller
             $company->isin = $request->isin;
             $company->issuer = $request->issuer;
             $company->image = $name;
+            $company->status = $request->status;
             $company->kdindex = isset($request->kdindex) ? true : false;
             $company->save();
 
@@ -220,17 +231,18 @@ class DataController extends Controller
             $info->save();
             $message = 'Успешно добавлен';
 
-            return redirect()->route('data.list.comp')->with('message',$message);
+            return redirect()->route('data.list.comp')->with('message', $message);
         }
     }
+
     public function editCompany(Request $request, $id)
     {
-        $company = Company::where('id',$id)->with(['info' => function ($query){
+        $company = Company::where('id', $id)->with(['info' => function ($query) {
             $query->where('lang', 'ru');
         }])->first();
-        if($request->isMethod('get')){
+        if ($request->isMethod('get')) {
             return view('admin.data.company-edit')->with('company', $company);
-        }else{
+        } else {
             $rules = [
                 'title' => 'required',
                 'isin' => 'required',
@@ -238,27 +250,28 @@ class DataController extends Controller
                 'image' => 'max:1024|mimes:jpeg,jpg,png',
             ];
             $validator = Validator::make($request->all(), $rules);
-            if($validator->fails()){
-                return back()->with('er','hello')->withErrors($validator);
+            if ($validator->fails()) {
+                return back()->with('er', 'hello')->withErrors($validator);
             }
 //            $company = Company::find($id);
 
-            if($request->file('image')){
+            if ($request->file('image')) {
                 $name = $request->file('image')->store('company', 'public');
-            } else{
+            } else {
                 $name = $company->image;
             }
             $company->update([
                 'title' => $request->title,
                 'isin' => $request->isin,
+                "status" => $request->status,
                 'kdindex' => isset($request->kdindex) ? true : false,
                 'issuer' => $request->issuer,
                 'image' => $name,
             ]);
-            CompanyInfo::where(['company_id'=>$id , 'lang' => $request->lang])->update(
+            CompanyInfo::where(['company_id' => $id, 'lang' => $request->lang])->update(
                 [
                     'desc' => $request->body,
-                    'site' =>  $request->site,
+                    'site' => $request->site,
                     'address' => $request->address,
                     'phone' => $request->phone,
                     'sector' => $request->sector,
@@ -268,20 +281,20 @@ class DataController extends Controller
 
             $message = 'Успешно обновлено';
 
-            return redirect()->route('data.list.comp')->with('message',$message);
+            return redirect()->route('data.list.comp')->with('message', $message);
         }
     }
 
-    public function translateCompany($id , $lang)
+    public function translateCompany($id, $lang)
     {
 //        $trans = CompanyInfo::trans($id,$lang);
 //        dd($trans);
         $trans = CompanyInfo::where(['company_id' => $id, 'lang' => $lang])->with('parent')->first();
-        if($trans){
+        if ($trans) {
 
 //            dd($trans);
             return view('admin.data.company-translate')->with('company', $trans);
-        }else{
+        } else {
             $new = new CompanyInfo();
             $new->company_id = $id;
             $new->lang = $lang;
@@ -296,6 +309,7 @@ class DataController extends Controller
         }
 
     }
+
     public function deleteCompany($id)
     {
         $company = Company::find($id);
@@ -316,11 +330,11 @@ class DataController extends Controller
         $company->details()->update([
             'common_stocks' => str_replace(',', '.', $request->common_stocks),
             'p_e' => str_replace(',', '.', $request->p_e),
-            'p_b' => str_replace(',', '.',  $request->p_b),
-            'dividend' => $request->dividend ? str_replace(',', '.', $request->dividend) : $company->details->dividend ,
-            'capitalization' => str_replace(',', '.', $request->capitalization) ,
+            'p_b' => str_replace(',', '.', $request->p_b),
+            'dividend' => $request->dividend ? str_replace(',', '.', $request->dividend) : $company->details->dividend,
+            'capitalization' => str_replace(',', '.', $request->capitalization),
             'preference' => $request->preference ? str_replace(',', '.', $request->preference) : null,
-                        // 'preference' => $request->preference ? str_replace(',', '.', $request->preference) : $company->details->preference,
+            // 'preference' => $request->preference ? str_replace(',', '.', $request->preference) : $company->details->preference,
 
             'face' => str_replace(',', '.', $request->face),
             'free_procent' => str_replace(',', '.', $request->free_procent),
@@ -332,53 +346,55 @@ class DataController extends Controller
     }
 
 
-
 //     Key Executives
 
-    public function  listKey()
+    public function listKey()
     {
-        $key = CompanyKey::where('lang','ru')->with('info')->paginate(10);
+        $key = CompanyKey::where('lang', 'ru')->with('info')->paginate(10);
 //        dd($key);
         return view('admin.data.key.list')->with('keys', $key);
     }
-    public function  createKey(Request $request)
+
+    public function createKey(Request $request)
     {
 //        dd($request->all());
-        if($request->isMethod('get')){
+        if ($request->isMethod('get')) {
             $comp = Company::get();
             return view('admin.data.key.create')->with('comps', $comp);
-        }else{
+        } else {
 //            dd($request->all());
-             $key =  new CompanyKey();
-             $key->company_id = $request->company;
-             $key->name = $request->name;
-             $key->position = $request->position;
-             $key->lang = $request->lang;
-             $key->save();
+            $key = new CompanyKey();
+            $key->company_id = $request->company;
+            $key->name = $request->name;
+            $key->position = $request->position;
+            $key->lang = $request->lang;
+            $key->save();
             $message = 'Успешно добавлен';
-             return redirect()->route('data.list.key')->with('message', $message);
+            return redirect()->route('data.list.key')->with('message', $message);
         }
     }
-    public function  editKey(Request $request, $id)
+
+    public function editKey(Request $request, $id)
     {
         $key = CompanyKey::find($id);
-        if($request->isMethod('get')){
+        if ($request->isMethod('get')) {
             $comp = Company::get();
-            return view('admin.data.key.edit')->with(['key'=>$key, 'comps' => $comp]);
-        }else{
+            return view('admin.data.key.edit')->with(['key' => $key, 'comps' => $comp]);
+        } else {
             $key->update([
-               'company_id' => $request->company,
-               'name' => $request->name,
-               'position' => $request->position,
+                'company_id' => $request->company,
+                'name' => $request->name,
+                'position' => $request->position,
             ]);
             $message = 'Успешно обновлено';
             return redirect()->route('data.list.key')->with('message', $message);
         }
     }
-    public function  deleteKey(Request $request, $id)
+
+    public function deleteKey(Request $request, $id)
     {
         $keys = CompanyKey::where('company_id', $id)->get();
-        foreach ($keys as $item ){
+        foreach ($keys as $item) {
 
             $item->delete();
         }
@@ -386,23 +402,24 @@ class DataController extends Controller
         return redirect()->route('data.list.key')->with('message', $message);
 //        dd($id);
     }
-    public function translateKey(Request  $request, $id, $lang)
+
+    public function translateKey(Request $request, $id, $lang)
     {
         $original = CompanyKey::find($id);
-        $key = CompanyKey::where(['parent_id'=>$id , 'lang' => $lang])->first();
+        $key = CompanyKey::where(['parent_id' => $id, 'lang' => $lang])->first();
         $comp = Company::get();
-        if($key){
-            return view('admin.data.key.edit')->with(['key'=>$key, 'comps' => $comp]);
-        }else{
-            $key = CompanyKey::where(['company_id'=>$id , 'lang' => $lang])->first();
+        if ($key) {
+            return view('admin.data.key.edit')->with(['key' => $key, 'comps' => $comp]);
+        } else {
+            $key = CompanyKey::where(['company_id' => $id, 'lang' => $lang])->first();
             $new = new CompanyKey();
-            $new->name = $original->name.$lang;
-            $new->position = $original->position.$lang;
+            $new->name = $original->name . $lang;
+            $new->position = $original->position . $lang;
             $new->lang = $lang;
             $new->company_id = $original->company_id;
             $new->parent_id = $id;
             $new->save();
-            return view('admin.data.key.edit')->with(['key'=>$new, 'comps' => $comp]);
+            return view('admin.data.key.edit')->with(['key' => $new, 'comps' => $comp]);
 
         }
     }
@@ -410,22 +427,23 @@ class DataController extends Controller
 
     public function listAnalysis()
     {
-        $analysis = CompanyAnalysis::where('lang','ru')->with('info')->paginate(10);
-        return view('admin.data.analysis.list')->with('analysis',$analysis);
+        $analysis = CompanyAnalysis::where('lang', 'ru')->with('info')->paginate(10);
+        return view('admin.data.analysis.list')->with('analysis', $analysis);
     }
+
     public function createAnalysis(Request $request)
     {
-        if($request->isMethod('get')){
+        if ($request->isMethod('get')) {
             $comps = Company::get();
             return view('admin.data.analysis.create')->with('comps', $comps);
-        }else{
+        } else {
             $rules = [
                 'body' => 'required',
                 'image' => 'required|max:1024|mimes:pdf',
             ];
             $validator = Validator::make($request->all(), $rules);
-            if($validator->fails()){
-                return back()->with('er','hello')->withErrors($validator);
+            if ($validator->fails()) {
+                return back()->with('er', 'hello')->withErrors($validator);
             }
             $name = $request->file('image')->store('analysis', 'public');
 
@@ -439,24 +457,25 @@ class DataController extends Controller
 
             $message = 'Успешно добавлено';
 
-            return redirect()->route('data.list.analysis')->with('message',$message);
+            return redirect()->route('data.list.analysis')->with('message', $message);
 //            dd($request->all());
         }
     }
+
     public function editAnalysis(Request $request, $id)
     {
         $analysis = CompanyAnalysis::find($id);
-        if($request->isMethod('get')){
+        if ($request->isMethod('get')) {
             $comps = Company::get();
 
-            return view('admin.data.analysis.edit')->with(['comps'=> $comps , 'analysis' => $analysis]);
-        }else{
+            return view('admin.data.analysis.edit')->with(['comps' => $comps, 'analysis' => $analysis]);
+        } else {
             $rules = [
                 'body' => 'required',
             ];
             $validator = Validator::make($request->all(), $rules);
-            if($validator->fails()){
-                return back()->with('er','hello')->withErrors($validator);
+            if ($validator->fails()) {
+                return back()->with('er', 'hello')->withErrors($validator);
             }
 
             $analysis->update([
@@ -466,13 +485,14 @@ class DataController extends Controller
             ]);
             $message = 'Успешно обновлено';
 
-            return redirect()->route('data.list.analysis')->with('message',$message);
+            return redirect()->route('data.list.analysis')->with('message', $message);
         }
     }
+
     public function deleteAnalysis($id)
     {
-        $analysis = CompanyAnalysis::where('company_id',$id)->get();
-        foreach ($analysis as $item ){
+        $analysis = CompanyAnalysis::where('company_id', $id)->get();
+        foreach ($analysis as $item) {
 
             $item->delete();
         }
@@ -480,24 +500,25 @@ class DataController extends Controller
         return redirect()->route('data.list.analysis')->with('message', $message);
 
     }
+
     public function translateAnalysis(Request $request, $id, $lang)
     {
         $analysis = CompanyAnalysis::where(['company_id' => $id, 'lang' => $lang])->first();
         $comps = Company::get();
-        if($analysis){
+        if ($analysis) {
 
-            return view('admin.data.analysis.edit')->with(['comps'=> $comps , 'analysis' => $analysis]);
-        }else{
+            return view('admin.data.analysis.edit')->with(['comps' => $comps, 'analysis' => $analysis]);
+        } else {
             $analysis = CompanyAnalysis::where(['company_id' => $id, 'lang' => 'ru'])->first();
 
             $new = new CompanyAnalysis();
             $new->company_id = $analysis->company_id;
             $new->image = $analysis->image;
-            $new->title = $analysis->title.$lang;
-            $new->desc = $analysis->desc.$lang;
+            $new->title = $analysis->title . $lang;
+            $new->desc = $analysis->desc . $lang;
             $new->lang = $lang;
             $new->save();
-            return view('admin.data.analysis.edit')->with(['comps'=> $comps , 'analysis' => $new]);
+            return view('admin.data.analysis.edit')->with(['comps' => $comps, 'analysis' => $new]);
 
         }
     }

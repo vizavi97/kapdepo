@@ -1,17 +1,19 @@
 import React from 'react'
 import ReactDOM from 'react-dom';
+import {App} from "./App";
 
+import {ChakraProvider} from '@chakra-ui/react'
 
 export const CompanyData = () => {
-  console.log('qwe');
+
   return (
     <>
-      <p>company data</p>
+      <ChakraProvider>
+        <App/>
+      </ChakraProvider>
     </>
   )
 };
-
-
 
 
 if (document.getElementById('admin-companies-information')) {

@@ -111,3 +111,7 @@ vendor
 #hide all sql and phar files
 *.sql
 *.phar
+
+kapdepo.sql
+localhost.sql
+sftp_timeweb.json

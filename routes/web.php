@@ -36,52 +36,55 @@ Route::group(['prefix' => 'cabinet', 'middleware' => 'auth'], function () {
     Route::get('pnl', 'UserController@getPNL')->name('get.pnl');
 
 });
+Route::group(['middleware' => \App\Http\Middleware\ClearCache::class], function () {
+    Route::get('/', 'HomeController@index')->name('home');
 
-
-Route::get('/', 'HomeController@index')->name('home');
-Route::get('setlocale/{locale}', 'HomeController@setLang')->name('lang');
+    Route::get('setlocale/{locale}', 'HomeController@setLang')->name('lang');
 //get branches for map
-Route::post('/branches', 'HomeController@branchesRequest')->name('branches.request');
+    Route::post('/branches', 'HomeController@branchesRequest')->name('branches.request');
 
 //news
-Route::group(['prefix' => 'news', "middleware" => \App\Http\Middleware\ClearCache::class], function () {
-    Route::get('/{category}', 'HomeController@getNews')->name('news.page');
-    Route::get('{category}/{slug}', 'HomeController@getNewsItem')->name('news.item');
+    Route::group(['prefix' => 'news'], function () {
+        Route::get('/{category}', 'HomeController@getNews')->name('news.page');
+        Route::get('{category}/{slug}', 'HomeController@getNewsItem')->name('news.item');
 
-});
+    });
 // Our offers
-Route::get('our-offers', 'HomeController@getOffersPage')->name('offers.page');
+    Route::get('our-offers', 'HomeController@getOffersPage')->name('offers.page');
 // Partners
-Route::get('partners', 'HomeController@getPartnersPage')->name('partners.page');
+    Route::get('partners', 'HomeController@getPartnersPage')->name('partners.page');
 // CONTACTS
-Route::get('contacts', 'HomeController@getContactsPage')->name('contacts.page');
+    Route::get('contacts', 'HomeController@getContactsPage')->name('contacts.page');
 //  Compliance
-Route::get('compliance', 'HomeController@getCompliancePage')->name('compliance.page');
+    Route::get('compliance', 'HomeController@getCompliancePage')->name('compliance.page');
 // Appeal
-Route::get('appeal', 'HomeController@getAppealPage')->name('appeal.page');
+    Route::get('appeal', 'HomeController@getAppealPage')->name('appeal.page');
 //disclosure
-Route::get('info-disclosure', 'HomeController@getDisclosurePage')->name('disclosure.page');
+    Route::get('info-disclosure', 'HomeController@getDisclosurePage')->name('disclosure.page');
 // About-us
 //Route::get('about-us', 'HomeController@getAbout')->name('about');
-Route::group(['prefix' => 'about-us'], function () {
-    Route::get('/', 'HomeController@getAbout')->name('about.page');
-    Route::get('leadership', 'HomeController@getTeamPage')->name('team.page');
-    Route::get('resume', 'HomeController@getResumePage')->name('team.resume');
-});
+    Route::group(['prefix' => 'about-us'], function () {
+        Route::get('/', 'HomeController@getAbout')->name('about.page');
+        Route::get('leadership', 'HomeController@getTeamPage')->name('team.page');
+        Route::get('resume', 'HomeController@getResumePage')->name('team.resume');
+    });
 //private
-Route::group(['prefix' => 'private', "middleware" => \App\Http\Middleware\ClearCache::class], function () {
-    Route::get('/', 'HomeController@getPrivate')->name('private.page');
-    Route::get('stocks', 'HomeController@getPrivateStocks')->name('private.stocks.page');
-    Route::get('stocks-data', 'HomeController@getPrivateStocksData')->name('private.stocks.data');
-    Route::get('bonds', 'HomeController@getPrivateBonds')->name('private.bonds.page');
-    Route::get('start-trading', 'HomeController@getPrivateTrade')->name('private.trade.page');
-});
+    Route::group(['prefix' => 'private'], function () {
+        Route::get('/', 'HomeController@getPrivate')->name('private.page');
+        Route::get('stocks', 'HomeController@getPrivateStocks')->name('private.stocks.page');
+        Route::get('stocks-data', 'HomeController@getPrivateStocksData')->name('private.stocks.data');
+        Route::get('bonds', 'HomeController@getPrivateBonds')->name('private.bonds.page');
+        Route::get('start-trading', 'HomeController@getPrivateTrade')->name('private.trade.page');
+    });
 //corporate
-Route::group(['prefix' => 'corporate'], function () {
-    Route::get('/', 'HomeController@getCorporate')->name('corporate.page');
-});
+    Route::group(['prefix' => 'corporate'], function () {
+        Route::get('/', 'HomeController@getCorporate')->name('corporate.page');
+    });
 //kd-ideas
-Route::group(['prefix' => 'kd-ideas', "middleware" => \App\Http\Middleware\ClearCache::class], function () {
+
+});
+
+Route::group(['prefix' => 'kd-ideas'], function () {
     Route::get('/', 'HomeController@getKd')->name('kd.page');
 
 
@@ -92,7 +95,7 @@ Route::group(['prefix' => 'kd-ideas', "middleware" => \App\Http\Middleware\Clear
 
 // Market data
 
-Route::group(['prefix' => 'market-data', "middleware" => \App\Http\Middleware\ClearCache::class], function () {
+Route::group(['prefix' => 'market-data'], function () {
     Route::get('/', 'HomeController@getMarketData')->name('market.page');
 
     Route::post('/market-json/{id}', 'HomeController@getMarketDataJson')->name('market-json.page');
@@ -122,10 +125,7 @@ Route::group(["prefix" => 'tim', "middleware" => \App\Http\Middleware\ClearCache
 
 // FOR ADMIN
 
-Route::group([
-    'middleware' => ['admin', \App\Http\Middleware\ClearCache::class],
-    'prefix' => 'admin',
-], function () {
+Route::group(['middleware' => ['admin', \App\Http\Middleware\ClearCache::class], 'prefix' => 'admin',], function () {
     Route::get('/', 'Admin\AdminController@index')->name('admin.home');
 
 
@@ -389,14 +389,19 @@ Route::group([
         Route::match(['get', 'post'], 'edit/{id}', 'Tim\StartTradingStepsController@edit')->name('start-trading.edit');
         Route::post('delete/{id}', "Tim\StartTradingStepsController@delete")->name('start-trading.delete');
     });
-    Route::group(['prefix' => "company-data",'middleware' => \App\Http\Middleware\ClearCache::class], function () {
+    Route::group(['prefix' => "company-data", 'middleware' => \App\Http\Middleware\ClearCache::class], function () {
         Route::get('/', "Tim\StaticPageController@getCompanyPageInformation")->name('company-data-page');
     });
     Route::group(['prefix' => 'api'], function () {
-        Route::get('/company-data', "Tim\ApiController@getCompanyData");
+        route::group(["prefix" => "company-data"], function () {
+            Route::get('/', "Tim\ApiController@getCompanyData");
+            route::post('/', "Tim\CompanyDataApiController@create");
+            route::get('/list', "Tim\CompanyDataApiController@list");
+            Route::post('/delete', "Tim\CompanyDataApiController@delete");
+            Route::post('/update', "Tim\CompanyDataApiController@update");
+        });
     });
 });
-
 Route::group(["prefix" => "api", "middleware" => \App\Http\Middleware\ClearCache::class], function () {
     Route::get('/market-data', "Tim\ApiController@getMarketData");
 });

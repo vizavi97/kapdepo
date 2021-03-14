@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Tim;
 use App\Company;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Response;
+use Illuminate\Http\Request;
 
 class ApiController extends Controller
 {
@@ -58,6 +59,7 @@ class ApiController extends Controller
 
     public function getCompanyData(Response $response)
     {
-        return response()->json('qwerty');
+        $companies = Company::all();
+        return response()->json($companies);
     }
 }

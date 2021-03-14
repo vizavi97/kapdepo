@@ -15,6 +15,8 @@
   <link href="{{ asset('front/css/slick.css') }}" type="text/css" rel="stylesheet">
   <link href="{{ asset('front/css/style.css') }}" type="text/css" rel="stylesheet">
   <link href="{{ asset('front/css/media.css') }}" type="text/css" rel="stylesheet">
+  <link href="{{ asset('css/tim/all.css') }}" type="text/css" rel="stylesheet">
+
   {{--    <link href="{{ asset('front/js/heats/heatmap.css') }}" type="text/css" rel="stylesheet">--}}
   <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
   @stack('styles')
@@ -22,6 +24,7 @@
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
         integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
   <script src="{{ asset('front/js/modernizr.custom.97074.js') }}"></script>
+
   <!-- Scripts -->
   {{--<script src="{{ asset('js/app.js') }}"></script>--}}
   <style>

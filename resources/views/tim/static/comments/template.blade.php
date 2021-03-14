@@ -9,7 +9,6 @@
         @csrf()
         <input type="hidden" name="parent" value="{{$parent}}"/>
         @if(isset($categories_id))
-          @dump($categories_id)
           <input type="hidden" name="cat" value="{{$categories_id}}"/>
         @endif
         <div class="form-group">

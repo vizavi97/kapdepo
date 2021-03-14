@@ -7,7 +7,9 @@ import {CreateElement} from "./components/CreateElement";
 
 export const App = () => {
 
-  const [button, useButton] = useState('list');
+  const [button, setButton] = useState('list');
+
+  const changeRootStateHandler = newValue => setButton(newValue);
 
   return (
     <>
@@ -23,17 +25,17 @@ export const App = () => {
         <Box>
           <Button colorScheme="teal" mr="4"
                   isActive={button === "list"}
-                  onClick={() => useButton('list')}>
+                  onClick={() => setButton('list')}>
             Список
           </Button>
           <Button colorScheme="teal"
                   isActive={button === "create"}
-                  onClick={() => useButton('create')}>Создать</Button>
+                  onClick={() => setButton('create')}>Создать</Button>
         </Box>
       </Flex>
       <Flex>
         {button === "list" ? <ListData/> : null}
-        {button === "create" ? <CreateElement/> : null}
+        {button === "create" ? <CreateElement onChange={changeRootStateHandler}/> : null}
       </Flex>
 
     </>

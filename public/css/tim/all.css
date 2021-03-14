@@ -1,0 +1,115 @@
+@media screen and (max-width: 768px) {
+    .contact-us-text h4, .contact-us-text h4 > span {
+        font-size: 1.5rem !important;
+    }
+
+
+    .main-timer-sec .col-timer {
+        width: auto;
+        max-width: unset !important;
+    }
+
+    #header-row {
+        align-items: center;
+    }
+
+    #header-row .menu {
+        display: none;
+    }
+
+    #header-row .toggle-nav {
+        margin-left: auto;
+        margin-right: 1rem;
+    }
+
+    .mobile-menu.is-active {
+        z-index: 1000;
+    }
+
+    .slick-arrow.slick-prev {
+        left: 20px !important;
+        z-index: 3 !important;
+    }
+
+    .slick-arrow.slick-next {
+        right: 20px !important;
+    }
+
+    main .following h2 {
+        font-size: 1.375rem;
+    }
+
+    .anch .page-preview {
+        flex-direction: column !important;
+    }
+
+    #deposit-service .page-preview {
+        flex-direction: column-reverse !important;
+    }
+
+    main .page-preview .left > div:after {
+        display: none !important;
+    }
+
+    .slider-wrapper__section br {
+        display: none !important;
+    }
+
+    .slider-wrapper__section .title-span {
+        font-size: 1.125rem;
+    }
+
+    main .site-title {
+        flex-direction: column;
+        align-items: flex-start;
+        float: none;
+    }
+
+    .comment {
+        padding: 1rem 1.5rem !important;
+    }
+
+    .sub-t {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        margin-bottom: 1.5rem;
+    }
+
+    #market-data {
+        overflow-x: hidden !important;
+    }
+
+    .market-header {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+    }
+
+    .market-header > div {
+        margin-bottom: 1.5rem;
+    }
+    .market-header > .market-header {
+        flex-direction: row!important;
+    }
+
+    .market-table {
+        display: block;
+        overflow-x: scroll;
+        margin-top: 20px;
+    }
+    #open-account-block {
+        padding: 1rem .5rem;
+    }
+    #open-account-block h1.open-title {
+        font-size: 1.5rem;
+    }
+    #open-account-block a.btn {
+        font-size: .75rem;
+        padding: .25rem;
+        margin-bottom: 1rem;
+    }
+}

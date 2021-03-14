@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {FormControl, Input, FormLabel, Flex, Button, HStack, Radio, RadioGroup, Select} from '@chakra-ui/react'
 
-export const CreateElement = (props) => {
+export const UpdateElement = (props) => {
   const [loader, setLoader] = useState(false);
   useEffect(() => {
     axios.get('http://kapdepo.cv05345.tmweb.ru/admin/api/company-data')
@@ -9,38 +9,39 @@ export const CreateElement = (props) => {
   }, []);
   const [companies, setCompanies] = useState(null);
   const [form, setForm] = useState({
-    companyID: '',
-    year: '',
-    quarter: '',
-    unallocatedProfits: '',
-    commitments: '',
-    longLine: '',
-    shortLine: '',
-    proceeds: '',
-    profit: '',
-    moneyResources: '',
-    activesOnStart: '',
-    activesOnEnd: '',
-    capitalOnStart: '',
-    capitalOnEnd: '',
-    faceValue: '',
-    stock: '',
-    preference: '',
-    dividends: '',
-    ebit: '',
-    liquidityIndicator: "normal",
+    id: props.object.id || "",
+    companyID: props.object.company_id || '',
+    year: props.object.year || '',
+    quarter: props.object.quarter || '',
+    unallocatedProfits: props.object.unallocatedProfits || '',
+    commitments: props.object.commitments || '',
+    longLine: props.object.longLine || '',
+    shortLine: props.object.shortLine || '',
+    proceeds: props.object.proceeds || '',
+    profit: props.object.profit || '',
+    moneyResources: props.object.moneyResources || '',
+    activesOnStart: props.object.activesOnStart || '',
+    activesOnEnd: props.object.activesOnEnd || '',
+    capitalOnStart: props.object.capitalOnStart || '',
+    capitalOnEnd: props.object.capitalOnEnd || '',
+    faceValue: props.object.faceValue || '',
+    stock: props.object.stock || '',
+    preference: props.object.preference || '',
+    dividends: props.object.dividends || '',
+    ebit: props.object.ebit || '',
+    liquidityIndicator: props.object.liquidityIndicator || '',
   });
   const submitHandler = async event => {
     event.preventDefault();
     setLoader(true);
-    await axios.post('http://kapdepo.cv05345.tmweb.ru/admin/api/company-data', form, {
+    await axios.post('http://kapdepo.cv05345.tmweb.ru/admin/api/company-data/update', form, {
       headers: {
         'X-CSRF-TOKEN': localStorage.getItem('csrf')
       }
     })
       .then(resp => {
         setLoader(false);
-        props.onChange('list');
+        window.location.reload();
       })
       .then(err => console.log(err))
 
@@ -223,6 +224,7 @@ export const CreateElement = (props) => {
           <FormLabel>Простые акции</FormLabel>
           <Input placeholder="Простые акции"
                  onChange={inputHandler}
+
                  isDisabled={loader}
                  name='stock'
                  value={form.stock}
@@ -279,10 +281,10 @@ export const CreateElement = (props) => {
           </Select>
         </FormControl>
         <Flex justifyContent={"flex-end"}>
-          <Button type={"submit"} colorScheme={"blackAlpha"}
+          <Button type={"submit"} colorScheme={"teal"}
                   isLoading={loader}
 
-          >Создать</Button>
+          >Изменить</Button>
         </Flex>
       </Flex>
     </form>

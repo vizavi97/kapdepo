@@ -35,7 +35,9 @@ class CompanyDataApiController extends Controller
             $cd->faceValue = $request->faceValue;
             $cd->preference = $request->preference;
             $cd->dividends = $request->dividends;
+            $cd->dividendsPreference = $request->dividendsPreference;
             $cd->ebit = $request->ebit;
+            $cd->target = $request->target;
             $cd->liquidityIndicator = $request->liquidityIndicator;
 
             $cd->save();
@@ -88,7 +90,9 @@ class CompanyDataApiController extends Controller
             $cd->faceValue = $request->faceValue;
             $cd->preference = $request->preference;
             $cd->dividends = $request->dividends;
+            $cd->dividendsPreference = $request->dividendsPreference;
             $cd->ebit = $request->ebit;
+            $cd->target = $request->target;
             $cd->liquidityIndicator = $request->liquidityIndicator;
             $cd->save();
 

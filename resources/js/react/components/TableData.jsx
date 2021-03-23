@@ -8,6 +8,7 @@ export const TableData = () => {
   const [filteredArr, setFilteredArr] = useState([]);
   const [showInUsd, setShowInUsd] = useState(false);
   const [dataLoader, setDataLoader] = useState(true);
+  const [sortDown, setSortDown] = useState(true);
   useEffect(() => {
     axios.get('http://kapdepo.cv05345.tmweb.ru/api/market-data')
       .then(response => {
@@ -21,7 +22,16 @@ export const TableData = () => {
     const lowerCase = event.target.value.toLowerCase().trim();
     setFilteredArr(dataArr.filter(item => Object.keys(item).some(key => item[key].toString().toLowerCase().includes(lowerCase))))
   };
-  console.log('filt :', filteredArr);
+  const sort = (objectKey) => {
+    const arr = [...filteredArr];
+    if (sortDown) {
+      arr.sort((a, b) => a[objectKey] - b[objectKey])
+    } else {
+      arr.sort((a, b) => b[objectKey] - a[objectKey])
+    }
+    setFilteredArr(arr);
+    setSortDown(!sortDown);
+  };
   if (dataLoader) {
     return (
       <div className='d-flex justify-content-center align-content-center py-4'>
@@ -31,7 +41,6 @@ export const TableData = () => {
       </div>
     )
   }
-
   return (
     <div className='row'>
       <div className='market-header w-100 d-flex justify-content-between align-content-center mb-3'>
@@ -72,9 +81,21 @@ export const TableData = () => {
           <th>Последняя</th>
           <th>Изменение</th>
           <th>Изменение</th>
-          <th>Объём</th>
-          <th>Рыночная кап</th>
+          <th>
+            <button type='button' className='btn btn-sm text-white'
+                    onClick={() => sort("volume")}
+            >Объём &#8597;</button>
+          </th>
+
+          <th>
+            <button type='button' className='btn btn-sm text-white'
+                    onClick={() => sort("market_cap")}>Рыночная
+              кап &#8597;
+            </button>
+          </th>
+
           <th>График за месяц</th>
+
         </tr>
         </thead>
         <tbody>
@@ -91,7 +112,6 @@ export const TableData = () => {
           const volume = item.volume ? item.volume : '-';
           const chart = item.data.month_volume;
           const chartArr = chart.slice(0, 30);
-          // console.log(chartArr[chartArr.length - 1].last_price);
           const options = {
             chart: {
               type: 'area',

@@ -15,5 +15,9 @@ window.axios = axios;
 
 /*React JS*/
 
+
 require('./react/RootComponent');
+//admin company data
 require('./react/admin/company-data/CompanyData');
+//company market data
+require('./react/company-data/App');

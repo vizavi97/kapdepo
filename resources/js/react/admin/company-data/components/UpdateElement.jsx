@@ -28,7 +28,9 @@ export const UpdateElement = (props) => {
     stock: props.object.stock || '',
     preference: props.object.preference || '',
     dividends: props.object.dividends || '',
+    dividendsPreference: props.object.dividendsPreference || '',
     ebit: props.object.ebit || '',
+    target: props.object.target || '',
     liquidityIndicator: props.object.liquidityIndicator || '',
   });
   const submitHandler = async event => {
@@ -172,7 +174,7 @@ export const UpdateElement = (props) => {
         </FormControl>
         {/*activesOnEnd*/}
         <FormControl id="activesOnEnd" isRequired mb={2}>
-          <FormLabel>Активы на начало отчетного периода</FormLabel>
+          <FormLabel>Активы на конец отчетного периода</FormLabel>
           <Input placeholder="Активы на конец отчетного периода"
                  onChange={inputHandler}
 
@@ -255,6 +257,19 @@ export const UpdateElement = (props) => {
                  type={'number'}/>
         </FormControl>
 
+        {/*dividends*/}
+        <FormControl id="dividendsPreference" isRequired mb={2}>
+          <FormLabel>Дивиденды по привилегированным акциям</FormLabel>
+          <Input placeholder="Дивиденды по привилегированным акциям"
+                 onChange={inputHandler}
+
+                 isDisabled={loader}
+                 name='dividendsPreference'
+                 value={form.dividendsPreference}
+                 type={'number'}/>
+        </FormControl>
+
+
         {/*Ebit*/}
         <FormControl id="ebit" isRequired mb={2}>
           <FormLabel>Ebit</FormLabel>
@@ -264,6 +279,17 @@ export const UpdateElement = (props) => {
                  isDisabled={loader}
                  name='ebit'
                  value={form.ebit}
+                 type={'number'}/>
+        </FormControl>
+        {/*Target*/}
+        <FormControl id="target" isRequired mb={2}>
+          <FormLabel>Target</FormLabel>
+          <Input placeholder="target"
+                 onChange={inputHandler}
+
+                 isDisabled={loader}
+                 name='target'
+                 value={form.target}
                  type={'number'}/>
         </FormControl>
         {/*liquidityIndicator*/}

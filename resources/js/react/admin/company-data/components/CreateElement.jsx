@@ -27,7 +27,9 @@ export const CreateElement = (props) => {
     stock: '',
     preference: '',
     dividends: '',
+    dividendsPreference: '',
     ebit: '',
+    target: '',
     liquidityIndicator: "normal",
   });
   const submitHandler = async event => {
@@ -102,7 +104,6 @@ export const CreateElement = (props) => {
           <FormLabel>Обязательства</FormLabel>
           <Input placeholder="Обязательства"
                  onChange={inputHandler}
-
                  isDisabled={loader}
                  name='commitments'
                  value={form.commitments}
@@ -171,7 +172,7 @@ export const CreateElement = (props) => {
         </FormControl>
         {/*activesOnEnd*/}
         <FormControl id="activesOnEnd" isRequired mb={2}>
-          <FormLabel>Активы на начало отчетного периода</FormLabel>
+          <FormLabel>Активы на конец отчетного периода</FormLabel>
           <Input placeholder="Активы на конец отчетного периода"
                  onChange={inputHandler}
 
@@ -252,6 +253,17 @@ export const CreateElement = (props) => {
                  value={form.dividends}
                  type={'number'}/>
         </FormControl>
+        {/*dividendsPreference*/}
+        <FormControl id="dividendsPreference" isRequired mb={2}>
+          <FormLabel>Дивиденды по привилегированным акциям</FormLabel>
+          <Input placeholder="Дивиденды по привилегированным акциям"
+                 onChange={inputHandler}
+
+                 isDisabled={loader}
+                 name='dividendsPreference'
+                 value={form.dividendsPreference}
+                 type={'number'}/>
+        </FormControl>
 
         {/*Ebit*/}
         <FormControl id="ebit" isRequired mb={2}>
@@ -262,6 +274,17 @@ export const CreateElement = (props) => {
                  isDisabled={loader}
                  name='ebit'
                  value={form.ebit}
+                 type={'number'}/>
+        </FormControl>
+        {/*Target*/}
+        <FormControl id="target" isRequired mb={2}>
+          <FormLabel>Target</FormLabel>
+          <Input placeholder="target"
+                 onChange={inputHandler}
+
+                 isDisabled={loader}
+                 name='target'
+                 value={form.target}
                  type={'number'}/>
         </FormControl>
         {/*liquidityIndicator*/}

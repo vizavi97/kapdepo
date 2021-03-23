@@ -69,7 +69,8 @@ Route::group(['middleware' => \App\Http\Middleware\ClearCache::class], function 
         Route::get('resume', 'HomeController@getResumePage')->name('team.resume');
     });
 //private
-    Route::group(['prefix' => 'private'], function () {
+    Route::group(['prefix' => 'private', \App\Http\Middleware\ClearCache::class], function () {
+
         Route::get('/', 'HomeController@getPrivate')->name('private.page');
         Route::get('stocks', 'HomeController@getPrivateStocks')->name('private.stocks.page');
         Route::get('stocks-data', 'HomeController@getPrivateStocksData')->name('private.stocks.data');
@@ -95,13 +96,16 @@ Route::group(['prefix' => 'kd-ideas'], function () {
 
 // Market data
 
-Route::group(['prefix' => 'market-data'], function () {
+Route::group(['prefix' => 'market-data', 'middleware' => \App\Http\Middleware\ClearCache::class], function () {
+    Route::get('/{issuer}', 'Tim\StaticPageController@getCompanyDataDescPage')->name('market-data-company');
     Route::get('/', 'HomeController@getMarketData')->name('market.page');
 
     Route::post('/market-json/{id}', 'HomeController@getMarketDataJson')->name('market-json.page');
     Route::post('/market-company-json/{id}', 'HomeController@getMarketCompanyJson')->name('market-company-json.page');
     Route::post('/market-company-preference-json/{id}', 'HomeController@getMarketCompanyPrefJson')->name('market-company-prefer-json.page');
     Route::get('/market-json', 'HomeController@getMarketDataJsonGet')->name('market-json.pageget');
+
+    //TIM
 
     Route::get('{issuer}/company', 'HomeController@getMarketCompany')->name('market.company');
     Route::get('{issuer}/balance', 'HomeController@getMarketBalance')->name('market.balance');
@@ -404,4 +408,5 @@ Route::group(['middleware' => ['admin', \App\Http\Middleware\ClearCache::class],
 });
 Route::group(["prefix" => "api", "middleware" => \App\Http\Middleware\ClearCache::class], function () {
     Route::get('/market-data', "Tim\ApiController@getMarketData");
+    Route::get('/{issuer}', "Tim\ApiController@getCompanyInformation");
 });

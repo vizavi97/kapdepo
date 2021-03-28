@@ -1,0 +1,307 @@
+.market-nav {
+    padding: 0 20px;
+}
+
+.market-nav ul {
+    /*border-bottom: 3px solid #e0e4e9;*/
+    background: #0056b3;
+    padding: 10px 0;
+    text-align: left;
+}
+
+.market-nav ul li {
+    display: inline-block;
+}
+
+/*.market-nav ul li a:hover{*/
+/*border-bottom: 3px solid #188fff;*/
+/*}*/
+.market-nav ul li a {
+    padding: 12px 12px;
+    font-weight: bold;
+    color: white;
+}
+
+.market-nav .active {
+    /*border-bottom: 3px solid #188fff;*/
+    background: white;
+    color: #0056b3;
+
+}
+
+.market-nav ul li a:hover {
+    background-color: white;
+    color: #0056b3;
+    cursor: pointer;
+}
+
+.table-bonds thead tr:first-child {
+    font-weight: bold;
+}
+
+.table-bonds thead tr:not(first-child) {
+    background: #0056b3;
+    color: white;
+}
+
+.dividend-table {
+    width: 100%;
+}
+
+.dividend-table tr td:not(:first-child), .dividend-table tr th:not(:first-child) {
+    text-align: right;
+}
+
+.summary-table {
+    margin-left: 20px;
+}
+
+.summary-table tr {
+    border-bottom: 1px solid #e2e5ea;
+}
+
+.summary-table tr td {
+    font-size: 15px;
+    font-weight: bold;
+    color: #003b7b;
+}
+
+.summary-table tr td:not(:first-child) {
+    font-weight: bold;
+    text-align: right;
+    padding: 5px 0 3px 15px;
+}
+
+.summary-table .block {
+    position: relative;
+}
+
+.summary-table .block:hover .info-text {
+    display: inline;
+    position: absolute;
+    top: -20px;
+    left: 5px;
+    background-color: #0151D3;
+    color: white;
+    border-radius: 10px;
+    padding: 5px 8px;
+    text-align: center;
+    width: 200%;
+}
+
+.summary-table .block .info-text {
+    display: none;
+}
+
+#graph, #graph_2 {
+    width: 100%;
+    height: 80%;
+    max-width: 100%;
+}
+
+#controls {
+    overflow: hidden;
+    padding-bottom: 3px;
+}
+
+#controls .amcharts-range-selector-range-wrapper {
+    display: none;
+}
+
+.table-bonds {
+    width: 100%;
+    margin-bottom: 5%;
+}
+
+.table-bonds thead tr th {
+    padding: 10px 0px 10px 10px;
+    border-bottom: 1px solid #efefef;
+    font-size: 14px;
+}
+
+.table-bonds thead tr th:first-child {
+    text-align: left;
+    padding-left: 10px;
+}
+
+.table-bonds thead tr th:not(first-child) {
+    padding-right: 10px;
+}
+
+.table-bonds tr td, .table-bonds thead tr th {
+    text-align: right;
+}
+
+.table-bonds tr td:first-child {
+    text-align: left;
+    width: 1%;
+}
+
+.table-bonds tbody tr:hover {
+    background: #efefef;
+}
+
+.table-bonds tbody tr td:nth-child(2) {
+    text-align: left;
+}
+
+.table-bonds tbody tr td:last-child {
+    padding-right: 10px;
+}
+
+.table-bonds tbody tr td {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    /*cursor: pointer;*/
+    font-weight: bold;
+}
+
+.table-bonds tbody tr td span {
+    font-weight: bold;
+}
+
+.table-bonds tbody tr td img {
+    width: 45px;
+    height: 45px;
+    object-fit: contain;
+    border-radius: 50px;
+}
+
+.profile-title {
+    padding: 0 20px;
+    font-weight: bold;
+    font-size: 17px;
+    margin-top: 30px;
+}
+
+.profile-category {
+    list-style-type: none;
+    padding: 0;
+}
+
+.profile-info {
+    padding-left: 20px;
+}
+
+.profile-info p {
+    margin: 0;
+}
+
+.profile-category span {
+    font-weight: bold;
+}
+
+.profile-table-block, .profile-desc-block {
+    padding: 0 20px;
+}
+
+.profile-table {
+    width: 100%;
+    /*margin: 0 20px;*/
+}
+
+.profile-table tr {
+    border-bottom: 1px solid #e0e4e9;
+}
+
+.profile-table th {
+    font-size: 13px;
+    color: #5b636a;
+}
+
+.profile-table tr td {
+    font-size: 15px;
+    padding: 5px 0;
+}
+
+.profile-desc-block p, .profile-info p, .profile-category li {
+    font-size: 15px;
+}
+
+.report-table h5 {
+    font-weight: bold;
+    text-align: center;
+    margin: 25px;
+}
+
+.report-filter {
+    width: 50%;
+    margin: 15px auto;
+}
+
+.report-filter .form-group {
+    display: inline-flex;
+    margin: 0 2%;
+}
+
+.report-filter .form-group label {
+    font-weight: bold;
+    margin: 0;
+    padding: 5px 5px;
+}
+
+.report-filter .report-filter-btn {
+    border: 1px solid #0151D3;
+    font-weight: bold;
+    color: #0151D3;
+    border-radius: 20px;
+}
+
+.report-filter .report-filter-btn:hover {
+    color: white;
+    background-color: #0151D3;
+}
+
+/*table*/
+
+.report-table table {
+    margin: 25px auto !important;
+    width: 100% !important;
+}
+
+.report-table tbody tr td {
+    width: auto !important;
+    height: auto !important;
+    padding: 0px 5px !important;
+}
+
+.report-table tbody tr:not(:first-child):hover {
+    background-color: #e0f0ff !important;
+
+}
+
+.report-table tbody tr td {
+    background-color: inherit !important;
+}
+
+.report-table tbody tr td {
+    border: none !important;
+}
+
+.report-table tbody tr:nth-child(even) {
+    background-color: #f5f5f7 !important;
+}
+
+.report-table tbody tr td:first-child {
+    font-weight: bold !important;
+}
+
+@media screen and (max-width: 768px) {
+    .market-nav ul {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        overflow-x: scroll;
+    }
+
+    .market-nav ul li {
+        white-space: nowrap;
+    }
+
+    .chakra-table {
+        overflow-x: scroll;
+        display: block;
+        white-space: nowrap;
+    }
+}
+

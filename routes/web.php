@@ -14,6 +14,8 @@
 //Route::get('/', function () {
 //    return view('welcome');
 //});
+use App\KDIdeas;
+
 Auth::routes(['register' => false]);
 
 Route::group(['prefix' => 'web-api'], function () {
@@ -81,8 +83,10 @@ Route::group(['middleware' => \App\Http\Middleware\ClearCache::class], function 
     Route::group(['prefix' => 'corporate'], function () {
         Route::get('/', 'HomeController@getCorporate')->name('corporate.page');
     });
+});
 //kd-ideas
-
+Route::group(['prefix' => 'kd-ideas-page', 'middleware' => \App\Http\Middleware\ClearCache::class], function () {
+    Route::get('/', 'Tim\KDIdeasController@get')->name('kd-ideas.page');
 });
 
 Route::group(['prefix' => 'kd-ideas'], function () {
@@ -382,6 +386,12 @@ Route::group(['middleware' => ['admin', \App\Http\Middleware\ClearCache::class],
         Route::match(['get', 'post'], 'edit/{id}', 'Tim\FaqController@edit')->name('faq.edit');
         Route::match(['get', 'post'], 'create', 'Tim\FaqController@create')->name('faq.create');
         Route::post('delete/{id}', "Tim\FaqController@delete")->name('faq.delete');
+    });
+    Route::group(['prefix' => 'kd-ideas'], function () {
+        Route::get('/', 'Tim\KDIdeasController@list')->name('kd-ideas.list');
+        Route::match(['get', 'post'], 'edit/{id}', 'Tim\KDIdeasController@edit')->name('kd-ideas.edit');
+        Route::match(['get', 'post'], 'create', 'Tim\KDIdeasController@create')->name('kd-ideas.create');
+        Route::post('delete/{id}', "Tim\KDIdeasController@delete")->name('kd-ideas.delete');
     });
     Route::group(['prefix' => 'comments'], function () {
         Route::get('/', 'CommentController@list')->name('comments.list');

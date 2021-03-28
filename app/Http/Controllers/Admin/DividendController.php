@@ -28,6 +28,8 @@ class DividendController extends Controller
             $new->year = $request->year;
             $new->sum = $request->sum;
             $new->procent = $request->procent;
+            $new->preference = $request->preference;
+            $new->preferencePercent = $request->preferencePercent;
             $new->save();
             $message = 'Успешно добавлено';
             return  redirect()->route('dividend.list')->with('message', $message);
@@ -47,6 +49,8 @@ class DividendController extends Controller
                 'year' => $request->year,
                 'sum' => $request->sum,
                 'procent' => $request->procent,
+                'preference' => $request->preference,
+                'preferencePercent' => $request->preferencePercent,
             ]);
             $message = 'Успешно обновлено';
             return  redirect()->route('dividend.list')->with('message', $message);

@@ -166,5 +166,11 @@
   "Дата размещения": "Posting date",
   "Дата погошения": "Burning date",
   "Номинал": "Denomination",
-  "Срок обращения": "Term of circulation"
+  "Срок обращения": "Term of circulation",
+  "Портфель": "Securities portfolio",
+  "Сумма инвестиций": "Investment amount",
+  "Обьем портфеля": "weight",
+  "Потенциал роста": "Growth potential",
+  "Ожидаемые дивиденды": "Expected dividends",
+  "Прогнозный доход от инвестиций": "Expected return on Investments"
 }

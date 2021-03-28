@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Tim;
 
 use App;
 use App\Company;
+use App\CompanyAnalysis;
 use App\CompanyDataApi;
 use App\CompanyKey;
 use App\Dividend;
@@ -13,6 +14,8 @@ use App\Http\Controllers\Controller;
 use App\Report;
 use Illuminate\Http\Response;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Lang;
 
 class ApiController extends Controller
 {
@@ -85,6 +88,7 @@ class ApiController extends Controller
             'last_year',
             'curr_month',
             'last_price_preference',
+            'preference_volume',
         ])->first();
         $company->year_volume = $company->with('year_volume')->get();
         $company->quarters = CompanyDataApi::where('company_id', $company->id)->get();
@@ -100,13 +104,17 @@ class ApiController extends Controller
         $company->min_week = isset($company->week_range_max->last()->last_price) ? $company->week_range_max->last()->last_price : null;
         $company->max_week = isset($company->week_range_max->first()->last_price) ? $company->week_range_max->first()->last_price : null;
         $company->change_month = number_format((($company->curr - $company->last_month) * 100) / $company->last_month, 3, '.', '');
-        $company->change_year = number_format((($company->curr - $company->last_month) * 100) / $company->last_month, 3, '.', '');
+        $company->change_year = number_format((($company->curr - $company->last_year) * 100) / $company->last_year, 3, '.', '');
         $company->info = Company::where('issuer', $issuer)->with(['info' => function ($query) {
             $query->where('lang', App::getLocale());
         }])->first();
+        $company->analysis = CompanyAnalysis::where(['company_id' => $company->id, 'lang' => App::getLocale()])->get();
         $company->balance = Report::type('balance')->where('company_id', $company->id)->get();
-        $company->keys = CompanyKey::where(['lang' => App::getLocale(), 'company_id' => $company->id])->get(); 
-        $company->div = Dividend::where('company_id', $company->id)->orderBy('year', 'desc')->take(5)->get();
+        $company->finance = Report::type('finance')->where('company_id', $company->id)->get();
+        $company->keys = CompanyKey::where(['lang' => App::getLocale(), 'company_id' => $company->id])->get();
+        $company->div = Dividend::where('company_id', $company->id)->orderBy('year', 'desc')->get();
+        $company->user = Auth::check();
+        $company->lang = Lang::getLocale();
         return response()->json($company);
     }
 }

@@ -2,6 +2,9 @@
 @push('scripts')
   <script type="text/javascript" src="{{asset('js/app.js')}}"></script>
 @endpush
+@push('styles')
+  <link rel="stylesheet" href="{{asset('./css/tim/steps.css')}}"/>
+@endpush
 @section('main_head')
   <section class="banner-section">
     <div class="banner-page-new">

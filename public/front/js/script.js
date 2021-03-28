@@ -3,7 +3,7 @@ $(document).ready(function () {
     $(this).toggleClass("active");
     $(".buttons-group").toggleClass("active");
   });
-  $(".toggle-nav").click(function () {s
+  $(".toggle-nav").click(function () {
     $(this).toggleClass("active");
     $(".mobile-menu").toggleClass("is-active");
     $(".fixed-remove").toggleClass("active");

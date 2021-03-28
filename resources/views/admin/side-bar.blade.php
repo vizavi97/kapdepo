@@ -107,6 +107,12 @@
               <p>Analytics</p>
             </a>
           </li>
+          <li class="nav-item">
+            <a href="{{ route('kd-ideas.list') }}" class="nav-link">
+              <i class="far fa-circle nav-icon"></i>
+              <p>Kd-Ideas</p>
+            </a>
+          </li>
         </ul>
       </li>
       {{--Users--}}

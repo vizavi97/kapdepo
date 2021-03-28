@@ -4,8 +4,6 @@ import React from 'react'
 export const Info = props => {
   const keys = props.data.keys;
   const info = props.data.info.info;
-  console.log(props.data);
-  console.log(info);
   return (
     <div className='row w-100'>
       <div className="col-md-6">

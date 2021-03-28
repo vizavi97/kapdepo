@@ -71,3 +71,15 @@
     background-color: #fefefe;
     box-shadow: 0 0 17px 1px rgba(222, 222, 222, .9);
 }
+
+.trade-step-body-inner {
+    padding: 1rem;
+    background-color: #fefefe;
+    box-shadow: 0 0 17px 1px rgba(222, 222, 222, .9);
+}
+
+.trade-step-body-inner p {
+    padding: 0;
+    background-color: transparent;
+    box-shadow: none;
+}

@@ -90,6 +90,14 @@ class Company extends Model
             ->whereNotIn('date', $this->getArrWeekends());
     }
 
+    public function preference_volume()
+    {
+        $d = date("Y-m-d", mktime(0, 0, 0, date('m'), date('d'), date('Y') - 1));
+        return $this->hasMany('App\CompanyPreference', 'company_id', 'id')
+            ->where('date', '>=', $d)
+            ->whereNotIn('date', $this->getArrWeekends());
+    }
+
 
     public function week_range_max()
     {

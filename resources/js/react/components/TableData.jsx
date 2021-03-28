@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react'
 import axios from 'axios'
 import Highcharts from 'highcharts'
 import HighchartsReact from "highcharts-react-official";
+import {config} from "../utils/config";
 
 export const TableData = () => {
   const [dataArr, setDataArr] = useState([]);
@@ -10,7 +11,7 @@ export const TableData = () => {
   const [dataLoader, setDataLoader] = useState(true);
   const [sortDown, setSortDown] = useState(true);
   useEffect(() => {
-    axios.get('http://kapdepo.cv05345.tmweb.ru/api/market-data')
+    axios.get(`${config.API_URL}market-data`)
       .then(response => {
         setDataArr(response.data);
         setFilteredArr(response.data);

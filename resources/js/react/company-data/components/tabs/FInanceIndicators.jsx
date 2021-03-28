@@ -1,115 +1,298 @@
-import React from 'react'
+import React, {useState, useEffect} from 'react'
 import {
   Table,
   Tbody,
+  Thead,
+  Th,
   Tr,
   Td,
   Select,
-  Flex,
-  Spinner
-} from "@chakra-ui/react"
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  Button,
+  useDisclosure
+} from "@chakra-ui/react";
+import Highcharts from 'highcharts/highstock'
+import HighchartsReact from "highcharts-react-official";
 
 export const FinanceIndicators = props => {
-  const lastYear = 2016;
-  const diffYears = new Array(new Date().getFullYear() - lastYear + 1).fill('').map((item, key) => lastYear + +key);
+  const lang = props.lang;
+  const dividends = props.dividends;
+  const sortQuarters = props.quarters.sort((a, b) => (a.year - b.year || a.quarter - b.quarter));
+  const {isOpen, onOpen, onClose} = useDisclosure();
   const quarters = new Array(4).fill('').map((item, key) => ++key);
+  const years = [...new Set(props.quarters.map(item => item.year))];
+  const [infoArr, setInfoArr] = useState(props.quarters);
+  const [activeYear, setActiveYear] = useState(Math.max(...years));
+  const [activeQuarter, setActiveQuarter] = useState(infoArr.filter(item => item.year === activeYear)[0].quarter);
+  const [activeInfo, setActiveInfo] = useState(infoArr.filter((item) => (item.year === activeYear && item.quarter === activeQuarter))[0]);
+  useEffect(() => setActiveInfo(() => infoArr.filter(
+    (item) => (item.year === activeYear && item.quarter === activeQuarter))[0]
+    ),
+    [activeYear, activeQuarter]);
+  const quarterHandler = event => {
+    setActiveQuarter(Number(event.target.value));
+  };
+  const yearHandler = event => {
+    setActiveYear(Number(event.target.value));
+  };
 
-  const data = props.data;
-  const lastQuarter = data.last_quarter;
-  console.log(lastQuarter);
-  if (data) {
-    return (
-      <div>
+  const chartOptions = {
+    chartOne: {
+      chart: {
+        type: 'column'
+      },
+      title: {
+        text: null
+      },
+      xAxis: {
+        categories: sortQuarters.map(item => item.year + "/" + item.quarter)
+      },
+      yAxis: {
+        title: null,
+        labels: {
+          style: {
+            display: "none"
+          }
+        },
+        gridLineColor: '#fff'
+      },
+      credits: {
+        enabled: false
+      },
+      series: [{
+        name: `${lang.assets}`,
+        data: sortQuarters.map(item => item.activesOnEnd)
+      }, {
+        name: `${lang.equity}`,
+        data: sortQuarters.map(item => item.capitalOnEnd)
+      }, {
+        name: `${lang.retainedEarnings}`,
+        data: props.quarters.map(item => item.unallocatedProfits)
+      }]
+    },
+    chartTwo: {
+      chart: {
+        type: 'column'
+      },
+      title: {
+        text: null
+      },
+      xAxis: {
+        categories: sortQuarters.map(item => item.year + "/" + item.quarter)
+      },
+      yAxis: {
+        title: null,
+        labels: {
+          style: {
+            display: "none"
+          }
+        },
+        gridLineColor: '#fff'
+      },
+      credits: {
+        enabled: false
+      },
+      series: [{
+        name: `${lang.liabilities}`,
+        data: sortQuarters.map(item => item.commitments)
+      }, {
+        name: `${lang.longTermLiabilities}`,
+        data: sortQuarters.map(item => item.longLine)
+      }, {
+        name: `${lang.shortTermLiabilities}`,
+        data: props.quarters.map(item => item.shortLine)
+      }]
+    },
+    chartThree: {
+      chart: {
+        type: 'column'
+      },
+      title: {
+        text: null
+      },
+      xAxis: {
+        categories: sortQuarters.map(item => item.year + "/" + item.quarter)
+      },
+      yAxis: {
+        title: null,
+        labels: {
+          style: {
+            display: "none"
+          }
+        },
+        gridLineColor: '#fff'
+      },
+      credits: {
+        enabled: false
+      },
+      series: [{
+        name: `${lang.revenue}`,
+        data: sortQuarters.map(item => item.proceeds)
+      }, {
+        name: `${lang.netProfit}`,
+        data: sortQuarters.map(item => item.profit)
+      }, {
+        name: `${lang.cash}`,
+        data: props.quarters.map(item => item.moneyResources)
+      }]
+    }
+
+  };
+
+
+  return (
+    <div className='row'>
+      <div className='col-md-5'>
         <Table>
-          <Tbody>
+          <Thead>
             <Tr>
-              <Td>Выберете квартал год</Td>
+              <Td>{lang.chooseQuarter}</Td>
               <Td>
-                <Select placeholder="Select year" value={lastQuarter.year}>
-                  {diffYears.map((item, key) =>
-                    <option key={key} value={item}>{item}</option>)}
-                </Select>
-                <Select placeholder="Select quarter" value={lastQuarter.quarter}>
+                <Select value={activeQuarter} onChange={quarterHandler}>
                   {quarters.map((item, key) =>
                     <option key={key} value={item}>{item}</option>)}
                 </Select>
               </Td>
             </Tr>
             <Tr>
-              <Td>Уставной фонд</Td>
-              <Td>{lastQuarter.stock.toLocaleString() + " UZS"}</Td>
+              <Td>{lang.chooseYear}</Td>
+              <Td>
+                <Select value={activeYear} onChange={yearHandler}>
+                  {years.map((item, key) =>
+                    <option key={key} value={item}>{item}</option>)}
+                </Select>
+              </Td>
             </Tr>
-            <Tr>
-              <Td>Простые акции</Td>
-              <Td>{lastQuarter.preference.toLocaleString()}</Td>
-            </Tr>
-            <Tr>
-              <Td>Привилигированные акции</Td>
-              <Td>{lastQuarter.dividendsPreference.toLocaleString()}</Td>
-            </Tr>
-            <Tr>
-              <Td>Номинальная стоимость</Td>
-              <Td>{lastQuarter.faceValue.toLocaleString() + " UZS"}</Td>
-            </Tr>
-            <Tr>
-              <Td>Активы</Td>
-              <Td>{lastQuarter.activesOnEnd.toLocaleString() + " UZS"}</Td>
-            </Tr>
-            <Tr>
-              <Td>Собственный капитал</Td>
-              <Td>{lastQuarter.capitalOnEnd.toLocaleString() + " UZS"}</Td>
-            </Tr>
-
-            <Tr>
-              <Td>Нераспределенная прибыль</Td>
-              <Td>{lastQuarter.unallocatedProfits.toLocaleString() + " UZS"}</Td>
-            </Tr>
-
-            <Tr>
-              <Td>Обязательства</Td>
-              <Td>{lastQuarter.commitments.toLocaleString() + " UZS"}</Td>
-            </Tr>
-
-            <Tr>
-              <Td>Долгосрочные обязательства</Td>
-              <Td>{lastQuarter.longLine.toLocaleString() + " UZS"}</Td>
-            </Tr>
-
-            <Tr>
-              <Td>Краткосрочные</Td>
-              <Td>{lastQuarter.shortLine.toLocaleString() + " UZS"}</Td>
-            </Tr>
-
-            <Tr>
-              <Td>Выручка</Td>
-              <Td>{lastQuarter.proceeds.toLocaleString() + " UZS"}</Td>
-            </Tr>
-
-            <Tr>
-              <Td>Чистая прибыль</Td>
-              <Td>{lastQuarter.profit.toLocaleString() + " UZS"}</Td>
-            </Tr>
-
-            <Tr>
-              <Td>Денежные средства</Td>
-              <Td>{lastQuarter.moneyResources.toLocaleString() + " UZS"}</Td>
-            </Tr>
-
-            <Tr>
-              <Td>Дивиденды</Td>
-              <Td>empty</Td>
-            </Tr>
-
-
-          </Tbody>
+          </Thead>
+          {activeInfo ?
+            <Tbody>
+              <Tr>
+                <Td>{lang.authorizedCapital}</Td>
+                <Td>{activeInfo.stock.toLocaleString() + " UZS"}</Td>
+              </Tr>
+              <Tr>
+                <Td>{lang.commonShares}</Td>
+                <Td>{activeInfo.preference.toLocaleString()}</Td>
+              </Tr>
+              <Tr>
+                <Td>{lang.preferredShares}</Td>
+                <Td>{activeInfo.dividendsPreference.toLocaleString()}</Td>
+              </Tr>
+              <Tr>
+                <Td>{lang.faceValue}</Td>
+                <Td>{activeInfo.faceValue.toLocaleString() + " UZS"}</Td>
+              </Tr>
+              <Tr>
+                <Td>{lang.assets}</Td>
+                <Td>{activeInfo.activesOnEnd.toLocaleString() + " UZS"}</Td>
+              </Tr>
+              <Tr>
+                <Td>{lang.equity}</Td>
+                <Td>{activeInfo.capitalOnEnd.toLocaleString() + " UZS"}</Td>
+              </Tr>
+              <Tr>
+                <Td>{lang.retainedEarnings}</Td>
+                <Td>{activeInfo.unallocatedProfits.toLocaleString() + " UZS"}</Td>
+              </Tr>
+              <Tr>
+                <Td>{lang.liabilities}</Td>
+                <Td>{activeInfo.commitments.toLocaleString() + " UZS"}</Td>
+              </Tr>
+              <Tr>
+                <Td>{lang.longTermLiabilities}</Td>
+                <Td>{activeInfo.longLine.toLocaleString() + " UZS"}</Td>
+              </Tr>
+              <Tr>
+                <Td>{lang.shortTermLiabilities}</Td>
+                <Td>{activeInfo.shortLine.toLocaleString() + " UZS"}</Td>
+              </Tr>
+              <Tr>
+                <Td>{lang.revenue}</Td>
+                <Td>{activeInfo.proceeds.toLocaleString() + " UZS"}</Td>
+              </Tr>
+              <Tr>
+                <Td>{lang.netProfit}</Td>
+                <Td>{activeInfo.profit.toLocaleString() + " UZS"}</Td>
+              </Tr>
+              <Tr>
+                <Td>{lang.cash}</Td>
+                <Td>{activeInfo.moneyResources.toLocaleString() + " UZS"}</Td>
+              </Tr>
+              <Tr>
+                <Td><Button onClick={onOpen}>{lang.dividends}</Button></Td>
+              </Tr>
+            </Tbody>
+            : <p>{lang.thisQuarterAbsent}</p>
+          }
         </Table>
-
       </div>
-    )
-  }
-  return (
-    <Flex justifyContent='center' alignItems='center'>
-      <Spinner/>
-    </Flex>
+      <div className='col-md-7'>
+        {quarters.length > 0 ?
+          <div>
+            <div>
+              <HighchartsReact style={{display: "flex", justifyContent: "flex-end"}}
+                               highcharts={Highcharts}
+                               options={chartOptions.chartOne}/>
+            </div>
+            <div>
+              <HighchartsReact style={{display: "flex", justifyContent: "flex-end"}}
+                               highcharts={Highcharts}
+                               options={chartOptions.chartTwo}/>
+            </div>
+            <div>
+              <HighchartsReact style={{display: "flex", justifyContent: "flex-end"}}
+                               highcharts={Highcharts}
+                               options={chartOptions.chartThree}/>
+            </div>
+
+          </div>
+
+          :
+          "Информация отсуствует"}
+      </div>
+      <Modal isOpen={isOpen} onClose={onClose} size={"3xl"}>
+        <ModalOverlay/>
+        <ModalContent>
+          <ModalHeader>{lang.div}</ModalHeader>
+          <ModalCloseButton/>
+          <ModalBody>
+            <Table variant="simple">
+              <Thead>
+                <Tr>
+                  <Th>Год</Th>
+                  <Th>По простым акциям</Th>
+                  <Th>% от рыночный стоимости </Th>
+                  <Th>По привилигированным акциям </Th>
+                  <Th>% от рыночный стоимости</Th>
+                </Tr>
+              </Thead>
+              <Tbody>
+                {dividends.length > 0 ? dividends.map((item,key) => {
+                  return (<Tr key={key}>
+                    <Td>{item.year}</Td>
+                    <Td>{item.sum}</Td>
+                    <Td>{item.procent}</Td>
+                    <Td>{item.preference}</Td>
+                    <Td>{item.preferencePercent > 0 ? item.preferencePercent + "%" : '-'}</Td>
+                  </Tr>)
+                }) : <Tr><Td>Нет данных</Td></Tr>}
+              </Tbody>
+            </Table>
+          </ModalBody>
+
+          <ModalFooter>
+            <Button colorScheme="blue" mr={3} onClick={onClose}>
+              Закрыть
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+    </div>
   )
 };

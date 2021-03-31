@@ -212,9 +212,10 @@
       @endif
     </li>
   @endforeach
-  <li class="par">
-    <a href="{{route('kd-ideas.page')}}">kd-ideas</a>
-  </li>
+
+{{--  <li class="par">--}}
+{{--    <a href="{{route('kd-ideas.page')}}">kd-ideas</a>--}}
+{{--  </li>--}}
   {{--        <li>--}}
   {{--            <a href="{{ route('market.page') }}">@lang('Рыночные данные')</a>--}}
   {{--        </li>--}}

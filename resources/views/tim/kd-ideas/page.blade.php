@@ -1,6 +1,10 @@
 @extends('layouts.app')
 @push('styles')
   <link rel="stylesheet" href="{{asset('./css/tim/steps.css')}}"/>
+  <link rel="stylesheet" href="{{asset('./css/tim/kd-ideas.css')}}"/>
+  <link rel="stylesheet" type="text/css" href="https://code.highcharts.com/css/stocktools/gui.css">
+  <link rel="stylesheet" type="text/css" href="https://code.highcharts.com/css/annotations/popup.css">
+
 @endpush
 @section('main_head')
   <section class="banner-section">
@@ -50,14 +54,14 @@
       <div class="company-container" id="company-data"></div>
       <div class="container">
         <div class="row">
-          <div class="col-md-12">
+          <div class="col-md-12 p-sm-0">
             <h1>kd-ideas</h1>
             <section class="kd-ideas">
               <div class="kd-ideas-navbar">
                 <ul class="nav nav-pills mb-3 d-flex row justify-content-center align-items-center" id="pills-tab"
                     role="tablist">
                   @foreach($kds as  $key => $kd)
-                    <li class="nav-item col-md-3">
+                    <li class="nav-item col-md-3 mb-2">
                       <a class="nav-link kd-ideas-navbar-item {{$loop->first ? "active" : null}}"
                          id="pills-home-{{$key}}-tab"
                          data-toggle="pill"
@@ -119,7 +123,7 @@
                           </td>
                           {{--                          Прогнозный доход--}}
                           <td class="{{($target  - $info->kd_price) / $info->kd_price < 0  ? "text-danger" : "text-success" }}">
-                            UZS {{round(($target  * $info->share_count + $info->box_dividends) - ($info->kd_price * $info->share_count), 2)}}
+                            UZS {{round(($target  * $info->share_count + $info->box_dividends * $info->share_count) - ($info->kd_price * $info->share_count), 2)}}
                           </td>
                           {{--                          процент--}}
                           <td class="{{($target  - $info->kd_price) / $info->kd_price < 0  ? "text-danger" : "text-success" }}">
@@ -130,46 +134,49 @@
                         </tr>
                       @endforeach
                       </tbody>
-                      <tfoot class="mr-2">
+                    </table>
+                    <table class="market-table  kd-ideas-table">
+                      <thead>
                       <tr>
-                        <td></td>
-                        <td><small>Стоимость портфеля</small></td>
-                        <td><small>Таргет</small></td>
-                        <td><small>Доходность портфеля</small></td>
+                        <th class="text-center">Стоимость портфеля</th>
+                        <th class="text-center">Таргет</th>
+                        <th class="text-center">Доходность портфеля</th>
                       </tr>
+                      </thead>
                       @php
                         $portfolio_profit_percent = (array_reduce($kd,function ($value,$item){
                               $number = isset($item['target']) ? $item['target'] : 0;
                               return $value += $number  * $item['kd-ideas']->share_count;})
                               - $total) / $total * 100
                       @endphp
+                      <tbody>
                       <tr>
-                        <td></td>
-                        <td><strong>UZS {{$total}}</strong></td>
-                        <td><strong>UZS {{
+                        <td class="text-center"><strong>UZS {{$total}}</strong></td>
+                        <td class="text-center"><strong>UZS {{
                         //Сумма таргетов
                        array_reduce($kd,function ($value,$item){
                                       $number = isset($item['target']) ? $item['target'] : 0;
-                                     return $value += $number  * $item['kd-ideas']->share_count + $item['kd-ideas']->box_dividends;
+                                     return $value += $number  * $item['kd-ideas']->share_count + $item['kd-ideas']->box_dividends * $item['kd-ideas']->share_count;
                                      })
 
 
                                      }}</strong></td>
 
-                        <td class="{{$portfolio_profit_percent < 0  ? "text-danger" : "text-success" }}"><strong>{{
+                        <td class="{{$portfolio_profit_percent < 0  ? "text-danger" : "text-success" }} text-center"><strong>{{
                         //Доходность портфеля
                         round($portfolio_profit_percent,2)
                                      }} %</strong></td>
 
                       </tr>
-                      </tfoot>
+                      </tbody>
+
                     </table>
                     <h2 class="py-3">@lang('Отчет по портфелю')</h2>
 
                     <table class="market-table kd-ideas-table">
                       <thead>
                       <tr>
-                        <th>@lang('Агрессивный')</th>
+                        <th>@lang('Тикер')</th>
                         <th>@lang('Кол-во ЦБ')</th>
                         <th>@lang('Цена') {{array_values($kd)[0]['kd-ideas']->date}}</th>
                         <th>@lang('Текущая цена')</th>
@@ -224,7 +231,6 @@
                         <td><small>Текущая стоимость</small></td>
                         <td><small>Прибыль по портфелю</small></td>
                         <td></td>
-                        <td><small>Ожидаемый доход</small></td>
                       </tr>
                       <tr>
                         <td></td>
@@ -235,8 +241,6 @@
                         round($percent_profit,2)
                         }} %</strong></td>
                         <td></td>
-                        <td class="{{$total_profit < 0  ? "text-danger" : "text-success" }}">{{$total_profit}}</td>
-
                       </tr>
                       </tfoot>
 
@@ -246,13 +250,198 @@
 
               </div>
             </section>
+            <div class="row">
+              <div class="col-md-12">
+                <nav class="market-nav">
+                  <ul>
+                    <li><a class="{{ request()->has('year') ? '' : 'active' }}"
+                           href="{{ route('kd-ideas.page') }}"><span>@lang('1 month')</span></a></li>
+                    <li><a class="{{ request()->has('year') ? 'active' : '' }}"
+                           href="{{ route('kd-ideas.page', 'year=1') }}"><span>@lang('1 year')</span></a></li>
+                  </ul>
+                  @if(request()->has('year'))
+                    <input type="hidden" id="year" value="1">
+                  @endif
+                </nav>
+                <p class="period">@lang('Period'):
+                  <span>{{ date("d-m-Y",mktime(0,0,0,date('m')-1, date('d'), date('Y'))) }}</span> -
+                  <span>{{ date('d.m.Y') }}</span></p>
+              </div>
+              <div class="col-md-12">
+                <div id="speedChart" width="600" height="400"></div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <style>
+  @push('scripts')
+    {{--    <script type="text/javascript" src="{{asset('front/js/highchart/highcharts.js')}}"></script>--}}
+    <script src="https://code.highcharts.com/stock/highstock.js"></script>
+    <script src="https://code.highcharts.com/stock/indicators/indicators-all.js"></script>
+    <script src="https://code.highcharts.com/stock/modules/drag-panes.js"></script>
 
+    <script src="https://code.highcharts.com/modules/annotations-advanced.js"></script>
+    <script src="https://code.highcharts.com/modules/price-indicator.js"></script>
+    <script src="https://code.highcharts.com/modules/full-screen.js"></script>
+
+    <script src="https://code.highcharts.com/modules/stock-tools.js"></script>
+
+  @endpush
+
+  <script type="text/javascript">
+
+    $(document).ready(function () {
+      var CSRF_TOKEN = $('meta[name=csrf-token]').attr('content');
+      var labels;
+      var vals;
+      var int = {_token: CSRF_TOKEN, year: $('#year').val() ? $('#year').val() : 0}
+
+
+      function time(value) {
+        const timezone = new Date(value);
+        return timezone.getDate() + '-' + timezone.getMonth() + '-' + timezone.getFullYear();
+      }
+
+
+      function chart(data) {
+        $('#speedChart').highcharts({
+          title: null,
+          chart: {
+            type: 'line'
+          },
+
+          credits: {
+            enabled: false
+          },
+          navigation: {
+            buttonOptions: {
+              enabled: false
+            }
+          },
+
+          xAxis: {
+            type: 'datetime',
+            labels: {
+              rotation: -90,
+              formatter: function () {
+                // return  time(this.value) ;
+                return Highcharts.dateFormat(" %d-%m-%Y", this.value);
+              }
+            }
+          },
+
+          tooltip: {
+            shared: true,
+            useHTML: true,
+            headerFormat: '<table>',
+            pointFormat: '<tr><td style="color: {series.color}">{series.name}: </td>' +
+              '<td style="text-align: right"><b>{point.y}</b></td> </tr>',
+            footerFormat: '</table>',
+            // xDateFormat: '%Y-%m-%d',
+            formatter: function () {
+              var s = '<b>' + Highcharts.dateFormat('%a, %d-%m-%Y', this.x) + '</b>';
+              $.each(this.points, function (i, point) {
+                s += '<br/><span style="color:' + point.series.color + '">' + point.series.name + '</span>: ' + point.y;
+              });
+              return s;
+            },
+            valueDecimals: 3,
+
+
+          },
+          yAxis: {
+            title: null,
+            labels: {
+              format: '{value:.3f}'
+            }
+          },
+          series: [{
+            name: 'Index',
+            data: data
+          }],
+          responsive: {
+            rules: [{
+              condition: {
+                maxWidth: 800
+              },
+              chartOptions: {
+                rangeSelector: {
+                  inputEnabled: false
+                }
+              }
+            }]
+          },
+        });
+      }
+
+      function getData() {
+        $.ajax({
+          type: 'POST',
+          url: '/kd-ideas/get-index',
+          dataType: 'JSON',
+          data: int,
+          success: function (data) {
+
+          }
+        }).done(function (data) {
+          const test = data;
+          const map1 = test.map(x => [(x[0] + 18000) * 1000, x[1]]);
+          chart(map1);
+
+        });
+      }
+
+      getData();
+    });
+  </script>
+  <style>
+    .info-block p {
+      text-indent: 2em;
+    }
+
+    .period {
+      text-align: center;
+    }
+
+    .period span {
+      font-weight: bold;
+      padding: 0 10px;
+    }
+
+    .market-nav {
+      padding: 0 20px;
+    }
+
+    .market-nav ul {
+      border-bottom: 3px solid #e0e4e9;
+      padding: 10px 0;
+      text-align: center;
+    }
+
+    .market-nav ul li {
+      display: inline-block;
+    }
+
+    /*.market-nav ul li a:hover{*/
+    /*border-bottom: 3px solid #188fff;*/
+    /*}*/
+    .market-nav ul li a {
+      padding: 12px 12px;
+      font-weight: bold;
+      color: #0151D3;
+    }
+
+    .market-nav .active {
+      border-bottom: 3px solid #188fff;
+
+    }
+
+    .market-nav ul li a:hover {
+      background-color: #e0f0ff;
+    }
   </style>
+
 @endsection

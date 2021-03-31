@@ -42,7 +42,10 @@ export const All = props => {
     const eps = (data.last_quarter.profit - data.last_quarter.preference * data.last_quarter.dividendsPreference) / data.last_quarter.stock;
     const bookValue = (data.last_quarter.capitalOnEnd / data.last_quarter.stock);
     const chartData = data.volume.sort((a, b) => a.timestamp - b.timestamp).map(item => [item.timestamp * 1000, item.last_price]);
+    const chartVolume = data.volume.sort((a, b) => a.timestamp - b.timestamp).map(item => [item.timestamp * 1000, Number(item.volume)]);
     const chartDataPreference = data.preference_volume.sort((a, b) => a.timestamp - b.timestamp).map(item => [item.timestamp * 1000, item.last_price]);
+    const chartVolumePreference = data.preference_volume.sort((a, b) => a.timestamp - b.timestamp).map(item => [item.timestamp * 1000, Number(item.volume)]);
+
     const options = {
       rangeSelector: {
         selected: 1
@@ -55,42 +58,72 @@ export const All = props => {
         labels: {enabled: false},
         gridLineWidth: 0,
       },
-      yAxis: {
-        title: {text: false},
-        gridLineWidth: 0,
-        labels: {enabled: false},
+      yAxis: [{
+        labels: {
+          align: 'left'
+        },
+        height: '80%',
         resize: {
           enabled: true
         }
-      },
+      }, {
+        labels: {
+          align: 'left'
+        },
+        top: '80%',
+        height: '20%',
+        offset: 0
+      }],
       legend: {enabled: false},
 
       series: [{
-        name: null,
+        name: "Value",
         data: chartData,
         tooltip: {
           valueDecimals: 2
         }
-      },],
-      responsive: {
-            rules: [{
-                condition: {
-                    maxWidth: 300
-                },
-
-                chartOptions: {
-                    rangeSelector: {
-                        inputEnabled: false
-                    }
-                }
-            }]
+      },
+        {
+          type: 'column',
+          name: 'Volume',
+          data: chartVolume,
+          yAxis: 1
         }
+      ],
+      responsive: {
+        rules: [{
+          condition: {
+            maxWidth: 300
+          },
+
+          chartOptions: {
+            rangeSelector: {
+              inputEnabled: false
+            }
+          }
+        }]
+      }
     };
     const optionsPreference = {
       rangeSelector: {
         selected: 1
       },
-
+      yAxis: [{
+        labels: {
+          align: 'left'
+        },
+        height: '80%',
+        resize: {
+          enabled: true
+        }
+      }, {
+        labels: {
+          align: 'left'
+        },
+        top: '80%',
+        height: '20%',
+        offset: 0
+      }],
       title: {
         text: `${lang.preferredShares}`
       },
@@ -101,7 +134,14 @@ export const All = props => {
         tooltip: {
           valueDecimals: 2
         }
-      },],
+      },
+        {
+          type: 'column',
+          name: 'Volume',
+          data: chartVolumePreference,
+          yAxis: 1
+        }
+      ],
 
     };
 
@@ -215,14 +255,14 @@ export const All = props => {
         <div className={'col-md-8'}>
           <div className='my-4 position-relative overflow-hidden'>
 
-            <HighchartsReact style={{display: "flex", justifyContent: "flex-end",overflow: "hidden"}}
+            <HighchartsReact style={{display: "flex", justifyContent: "flex-end", overflow: "hidden"}}
                              highcharts={Highcharts}
                              constructorType={"stockChart"}
                              options={options}/>
           </div>
           {data.preference_volume.length > 0 ?
             <div className='my-4 position-relative overflow-hidden'>
-              <HighchartsReact style={{display: "flex", justifyContent: "flex-end",overflow: "hidden"}}
+              <HighchartsReact style={{display: "flex", justifyContent: "flex-end", overflow: "hidden"}}
                                constructorType={"stockChart"}
                                highcharts={Highcharts}
                                options={optionsPreference}/>

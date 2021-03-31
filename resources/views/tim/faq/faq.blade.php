@@ -14,7 +14,7 @@
             <div class="row">
               <div class="col-12">
                 <div class="slider-wrapper__section">
-                  <span class="title-span">@lang('Рыночные данные')</span>
+                  <span class="title-span">F.A.Q</span>
                   <span class="bor"></span>
 
                 </div>
@@ -39,7 +39,7 @@
   <section class="about-us">
     <div class="container">
       <div class="site-title clearfix">
-        <h2>@lang('Рыночные данные')</h2>
+        <h2>F.A.Q</h2>
         <ul class="breadcrumbs">
           <li>
             <a href="{{ route('home') }}">@lang('Главная')</a>
@@ -53,9 +53,6 @@
 @section('content')
   <div class="container">
     <div class="faq-container">
-      <div class="faq-headline">
-        <h2>Faq</h2>
-      </div>
       <ul class="faq-list">
         @foreach($faqs as $faq)
           <li class="faq-item">

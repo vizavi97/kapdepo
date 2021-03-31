@@ -1,10 +1,11 @@
 import React, {useState, useEffect} from 'react';
 import {FormControl, Input, FormLabel, Flex, Button, HStack, Radio, RadioGroup, Select} from '@chakra-ui/react'
+import {config} from "../../../utils/config";
 
 export const UpdateElement = (props) => {
   const [loader, setLoader] = useState(false);
   useEffect(() => {
-    axios.get('http://kapdepo.cv05345.tmweb.ru/admin/api/company-data')
+    axios.get(`${config.ADMIN_API_URL}company-data`)
       .then(resp => setCompanies(resp.data))
   }, []);
   const [companies, setCompanies] = useState(null);
@@ -36,7 +37,7 @@ export const UpdateElement = (props) => {
   const submitHandler = async event => {
     event.preventDefault();
     setLoader(true);
-    await axios.post('http://kapdepo.cv05345.tmweb.ru/admin/api/company-data/update', form, {
+    await axios.post(`${config.ADMIN_API_URL}company-data/update`, form, {
       headers: {
         'X-CSRF-TOKEN': localStorage.getItem('csrf')
       }

@@ -1,3 +1,4 @@
 export const config = {
-  API_URL: "http://kapdepo.cv05345.tmweb.ru/api/"
+  API_URL: `${window.location.origin}/api/`,
+  ADMIN_API_URL: `${window.location.origin}/admin/api/`
 };

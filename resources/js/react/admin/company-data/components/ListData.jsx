@@ -17,22 +17,22 @@ import {
 } from "@chakra-ui/react"
 import {useDisclosure} from "@chakra-ui/hooks";
 import {UpdateElement} from "./UpdateElement";
-
+import {config} from '../../../utils/config';
 
 export const ListData = () => {
+  console.log(window.location.origin);
   const [companies, setCompanies] = useState([]);
   const [selectedCompany, setSelectedCompany] = useState({});
   const {isOpen, onOpen, onClose} = useDisclosure();
   useEffect(() => {
-    axios.get('http://kapdepo.cv05345.tmweb.ru/admin/api/company-data/list')
+    axios.get(`${config.ADMIN_API_URL}company-data/list`)
       .then(resp => setCompanies(resp.data))
   }, []);
 
   const deleteHandler = id => {
-    console.log("clicked");
-    axios.post('http://kapdepo.cv05345.tmweb.ru/admin/api/company-data/delete', {id})
+    axios.post(`${config.ADMIN_API_URL}company-data/delete`, {id})
       .then(response => {
-        setCompanies(compnanyArr => compnanyArr.filter(item => item.id !== id))
+        setCompanies(companyArr => companyArr.filter(item => item.id !== id))
       })
       .catch(error => console.log(error))
   };

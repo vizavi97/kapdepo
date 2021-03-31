@@ -7,6 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 class CompanyDataApi extends Model
 {
     //
-    protected $table = 'company_data_api';
+    protected $table = 'companies_data_api';
     protected $guarded = [];
 }

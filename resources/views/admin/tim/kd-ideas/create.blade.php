@@ -45,22 +45,22 @@
                 </div>
                 <div class="form-group">
                   <label for="share_count" class="required">Кол-ЦБ</label>
-                  <input type="number" class="form-control" min="0" required placeholder="Кол-ЦБ"
+                  <input type="number" class="form-control" min="0" required step=".01" placeholder="Кол-ЦБ"
                          id="share_count" name="share_count">
                 </div>
                 <div class="form-group">
                   <label for="kd_number" class="required">Номер портфеля</label>
-                  <input type="number" class="form-control" min="0" required placeholder="Номер портфеля"
+                  <input type="number" class="form-control" min="0" required step=".01" placeholder="Номер портфеля"
                          id="kd_number" name="kd_number">
                 </div>
                 <div class="form-group">
                   <label for="kd_price" class="required">Цена открытия</label>
-                  <input type="number" class="form-control" min="0" required placeholder="Цена открытия"
+                  <input type="number" class="form-control" min="0" step=".01" placeholder="Цена открытия"
                          id="kd_price" name="kd_price">
                 </div>
                 <div class="form-group">
                   <label for="box_dividends" class="required">Ожидаемые дивиденды</label>
-                  <input type="number" class="form-control" min="0" required placeholder="Ожидаемые дивиденды"
+                  <input type="number" class="form-control" min="0" step=".01" required placeholder="Ожидаемые дивиденды"
                          id="box_dividends" name="box_dividends">
                 </div>
                 <div class="form-group">
@@ -72,7 +72,6 @@
               <div class="card-footer">
                 <button type="submit" class="btn btn-success float-right">Сохранить</button>
               </div>
-
             </form>
           </div>
         </div>

@@ -126,7 +126,7 @@ Route::group(['prefix' => 'open-account'], function () {
 
 // TIM
 
-Route::group(["prefix" => 'tim', "middleware" => \App\Http\Middleware\ClearCache::class], function () {
+Route::group([ "middleware" => \App\Http\Middleware\ClearCache::class], function () {
     Route::get('/faq', 'Tim\FaqController@get');
     Route::post('/create-comment', "CommentController@createComment")->name('create-comment');
 });

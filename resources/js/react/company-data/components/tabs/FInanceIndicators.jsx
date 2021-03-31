@@ -234,7 +234,7 @@ export const FinanceIndicators = props => {
       </div>
       <div className='col-md-7'>
         {quarters.length > 0 ?
-          <div>
+          <div className='finance-indicators-chart'>
             <div>
               <HighchartsReact style={{display: "flex", justifyContent: "flex-end"}}
                                highcharts={Highcharts}

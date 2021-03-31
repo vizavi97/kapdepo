@@ -84,7 +84,7 @@ class Company extends Model
 
     public function volume()
     {
-        $d = date("Y-m-d", mktime(0, 0, 0, date('m'), date('d'), date('Y') - 1));
+        $d = date("Y-m-d", mktime(0, 0, 0, date('m'), date('d'), date('Y') - 10));
         return $this->hasMany('App\CompanyData', 'company_id', 'id')
             ->where('date', '>=', $d)
             ->whereNotIn('date', $this->getArrWeekends());
@@ -92,7 +92,7 @@ class Company extends Model
 
     public function preference_volume()
     {
-        $d = date("Y-m-d", mktime(0, 0, 0, date('m'), date('d'), date('Y') - 1));
+        $d = date("Y-m-d", mktime(0, 0, 0, date('m'), date('d'), date('Y') - 10));
         return $this->hasMany('App\CompanyPreference', 'company_id', 'id')
             ->where('date', '>=', $d)
             ->whereNotIn('date', $this->getArrWeekends());

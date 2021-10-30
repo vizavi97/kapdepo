@@ -16,6 +16,13 @@
 //});
 use App\KDIdeas;
 
+//External error route
+
+Route::get('/{any}', function () {
+    return view("external_works");
+})->where('any', '.*');
+
+
 Auth::routes(['register' => false]);
 
 Route::group(['prefix' => 'web-api'], function () {

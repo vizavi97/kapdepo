@@ -58,7 +58,9 @@ class ApiController extends Controller
                     'change_1' => $change,
                     'change_2' => number_format(($change * 100) / $curr, 3, '.', ''),
                     'ticker' => $model->issuer,
-                    'title' => $model->title
+                    'title' => $model->title,
+                    'lang' => Lang::getLocale()
+
                 ];
             });
         return response()->json($company);

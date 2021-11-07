@@ -13,7 +13,7 @@ class CreateTableCompanyDataApi extends Migration
      */
     public function up()
     {
-        Schema::create('company_data_api', function (Blueprint $table) {
+        Schema::create('companies_data_api', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->integer('company_id');
             $table->integer('year');
@@ -45,6 +45,6 @@ class CreateTableCompanyDataApi extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('company_data_api');
+        Schema::dropIfExists('companies_data_api');
     }
 }

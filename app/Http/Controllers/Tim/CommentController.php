@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Tim;
 
 use App\Comment;
 use App\NewIt;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
 
 class CommentController extends Controller
 {
@@ -25,6 +26,7 @@ class CommentController extends Controller
 
     public function list()
     {
+
         $comments = Comment::all();
 
         foreach ($comments as $comment) {

@@ -18,9 +18,9 @@ use App\KDIdeas;
 
 //External error route
 
-Route::get('/{any}', function () {
-    return view("external_works");
-})->where('any', '.*');
+//Route::get('/{any}', function () {
+//    return view("external_works");
+//})->where('any', '.*');
 
 
 Auth::routes(['register' => false]);
@@ -135,7 +135,7 @@ Route::group(['prefix' => 'open-account'], function () {
 
 Route::group([ "middleware" => \App\Http\Middleware\ClearCache::class], function () {
     Route::get('/faq', 'Tim\FaqController@get');
-    Route::post('/create-comment', "CommentController@createComment")->name('create-comment');
+    Route::post('/create-comment', "Tim\CommentController@createComment")->name('create-comment');
 });
 
 // FOR ADMIN
@@ -400,9 +400,9 @@ Route::group(['middleware' => ['admin', \App\Http\Middleware\ClearCache::class],
         Route::match(['get', 'post'], 'create', 'Tim\KDIdeasController@create')->name('kd-ideas.create');
         Route::post('delete/{id}', "Tim\KDIdeasController@delete")->name('kd-ideas.delete');
     });
-    Route::group(['prefix' => 'comments'], function () {
-        Route::get('/', 'CommentController@list')->name('comments.list');
-        Route::post('delete/{id}', "CommentController@delete")->name('comments.delete');
+    Route::group(['prefix' => 'comments',], function () {
+        Route::get('/', 'Tim\CommentController@list')->name('comments.list');
+        Route::post('delete/{id}', "Tim\CommentController@delete")->name('comments.delete');
     });
     Route::group(['prefix' => 'start-trading'], function () {
         Route::get('/', 'Tim\StartTradingStepsController@list')->name('start-trading.list');

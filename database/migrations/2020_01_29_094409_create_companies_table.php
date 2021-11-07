@@ -17,6 +17,7 @@ class CreateCompaniesTable extends Migration
         Schema::create('companies', function (Blueprint $table) {
             $table->increments('id');
             $table->string('title');
+            $table->string("status");
             $table->string('isin');
             $table->string('issuer');
             $table->string('image');
@@ -40,6 +41,7 @@ class CreateCompaniesTable extends Migration
 //        Schema::dropIfExists('buh_dictionary')
 //        DB::statement('SET FOREIGN_KEY_CHECKS = 1');
 //        Schema::drop('companies');
+        
         Schema::table('companies_data', function (Blueprint $table) {
             $table->dropForeign('companies_data_company_id_foreign');
         });

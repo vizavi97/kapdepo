@@ -37,7 +37,7 @@ use App\Company;
 use App\Data;
 use Storage;
 use SimpleXMLElement;
-use App\Helpers\Helper;
+use App\Http\Helpers\Helper;
 use DateTime;
 use DateTimeZone;
 use Carbon\Carbon;

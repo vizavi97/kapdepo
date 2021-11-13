@@ -268,16 +268,33 @@ class DataController extends Controller
                 'issuer' => $request->issuer,
                 'image' => $name,
             ]);
-            CompanyInfo::where(['company_id' => $id, 'lang' => $request->lang])->update(
-                [
-                    'desc' => $request->body,
-                    'site' => $request->site,
-                    'address' => $request->address,
-                    'phone' => $request->phone,
-                    'sector' => $request->sector,
-                    'industry' => $request->industry,
-                ]
-            );
+            $trans = CompanyInfo::where(['company_id' => $id, 'lang' => $request->lang])->with('parent')->first();
+            if ($trans) {
+
+                CompanyInfo::where(['company_id' => $id, 'lang' => $request->lang])->update(
+                    [
+                        'desc' => $request->body,
+                        'site' => $request->site,
+                        'address' => $request->address,
+                        'phone' => $request->phone,
+                        'sector' => $request->sector,
+                        'industry' => $request->industry,
+                    ]
+                );
+            }
+            else {
+                $info = new CompanyInfo();
+                $info->company_id = $company->id;
+                $info->lang = $request->lang;
+                $info->desc = $request->body ? $request->body : null;
+                $info->site = $request->site ? $request->site : null;
+                $info->address = $request->address ? $request->address : null;
+                $info->phone = $request->phone ? $request->phone : null;
+                $info->sector = $request->sector ? $request->sector : null;
+                $info->industry = $request->industry ? $request->industry : null;
+                $info->save();
+            }
+
 
             $message = 'Успешно обновлено';
 
